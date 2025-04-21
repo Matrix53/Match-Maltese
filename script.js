@@ -338,6 +338,9 @@ function toggleMusic() {
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
+  // 确保按钮在所有平台上可见
+  ensureButtonVisibility();
+
   // 绑定按钮事件
   startBtn.addEventListener('click', initGame)
   musicBtn.addEventListener('click', toggleMusic)
@@ -367,3 +370,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初始化游戏
   initGame()
 })
+
+// 确保按钮在所有平台上可见
+function ensureButtonVisibility() {
+  // 获取所有游戏按钮
+  const allButtons = document.querySelectorAll('.game-btn');
+  
+  // 强制应用样式确保按钮可见
+  allButtons.forEach(button => {
+    // 强制按钮可见
+    button.style.display = 'inline-block';
+    button.style.visibility = 'visible';
+    button.style.opacity = '1';
+    
+    // 给按钮添加触摸事件监听器以确保在移动设备上有响应
+    button.addEventListener('touchstart', function(e) {
+      e.preventDefault(); // 防止默认行为
+      // 模拟点击按钮
+      setTimeout(() => {
+        this.click();
+      }, 0);
+    });
+  });
+  
+  // 特殊处理底部区域，确保它总是可见的
+  const footer = document.querySelector('.game-footer');
+  if (footer) {
+    footer.style.display = 'flex';
+    footer.style.zIndex = '10';
+    
+    // 特别针对Edge浏览器的额外处理
+    if (navigator.userAgent.indexOf('Edge') !== -1 || navigator.userAgent.indexOf('Edg') !== -1) {
+      footer.style.position = 'fixed';
+      footer.style.bottom = '10px';
+      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+      footer.style.paddingTop = '5px';
+      footer.style.paddingBottom = '5px';
+    }
+  }
+}

@@ -253,12 +253,17 @@ body {
   flex: 0 0 auto;
   position: relative; /* 确保位置 */
   z-index: 5; /* 提高层级，确保可见 */
+  bottom: 0; /* 确保底部对齐 */
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.1); /* 添加轻微背景以增强可见性 */
 }
 
 /* 按钮样式 */
 .game-btn {
   display: inline-block !important; /* 强制显示 */
   visibility: visible !important; /* 强制可见 */
+  opacity: 1 !important; /* 确保不透明 */
   padding: 10px 15px; 
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
@@ -276,6 +281,10 @@ body {
   overflow: hidden;
   margin: 5px; 
   min-width: 90px; /* 确保按钮有最小宽度 */
+  -webkit-appearance: none; /* 修复在某些移动浏览器中的显示问题 */
+  appearance: none;
+  -webkit-transform: translateZ(0); /* 启用硬件加速以避免某些移动浏览器中的渲染问题 */
+  transform: translateZ(0);
 }
 
 .game-btn::before {
@@ -483,6 +492,8 @@ body {
     padding: 8px 12px; /* 更小的按钮内边距 */
     font-size: 0.85rem; /* 更小的字体大小 */
     margin: 3px; /* 更小的按钮间距 */
+    display: inline-block !important; /* 再次强制显示 */
+    visibility: visible !important; /* 再次强制可见 */
   }
   
   .modal-content {
@@ -564,5 +575,19 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* 新增对手机Edge浏览器的特殊兼容处理 */
+@supports (-ms-ime-align: auto) {
+  .game-footer {
+    position: fixed;
+    bottom: 10px;
+  }
+  
+  .game-btn {
+    transform: none !important;
+    display: inline-block !important;
+    visibility: visible !important;
   }
 }
