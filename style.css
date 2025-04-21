@@ -154,7 +154,8 @@ body {
   width: 100%;
   height: 100%;
   position: absolute;
-  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden; /* Ensure this is explicitly set for Firefox */
   border-radius: 10px;
   display: flex;
   justify-content: center;

@@ -95,9 +95,13 @@ function createCards() {
 
     const cardInner = document.createElement('div')
     cardInner.classList.add('card-inner')
+    cardInner.style.transformStyle = 'preserve-3d' // Firefox fix
 
     const cardFront = document.createElement('div')
     cardFront.classList.add('card-front')
+    // Firefox fix for backface visibility
+    cardFront.style.backfaceVisibility = 'hidden'
+    cardFront.style.webkitBackfaceVisibility = 'hidden'
 
     const cardImage = document.createElement('img')
     cardImage.src = `images/card${cardId}.jpeg`
@@ -105,6 +109,9 @@ function createCards() {
 
     const cardBack = document.createElement('div')
     cardBack.classList.add('card-back')
+    // Firefox fix for backface visibility
+    cardBack.style.backfaceVisibility = 'hidden'
+    cardBack.style.webkitBackfaceVisibility = 'hidden'
 
     cardFront.appendChild(cardImage)
     cardInner.appendChild(cardFront)
