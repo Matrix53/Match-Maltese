@@ -123,7 +123,11 @@ body {
   grid-template-rows: repeat(4, 1fr);
   grid-gap: min(2vmin, 10px);
   padding: min(2vmin, 10px);
-  flex: 0 1 auto; /* 允许它收缩但不增长 */
+  flex: 1 0 auto; /* 让它可以增长但不收缩 */
+  position: relative; /* 添加相对定位 */
+  left: 50%; /* 水平居中定位 */
+  transform: translateX(-50%); /* 水平居中定位的校正 */
+  max-height: calc(100vh - 200px); /* 确保不超出屏幕 */
 }
 
 /* 游戏卡片 */
@@ -575,6 +579,46 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* 新增对手机Edge浏览器的特殊兼容处理 */
+@supports (-ms-ime-align: auto) {
+  .game-footer {
+    position: fixed;
+    bottom: 10px;
+  }
+  
+  .game-btn {
+    transform: none !important;
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+  
+  /* 针对Edge移动版的游戏板居中修复 */
+  .game-board {
+    left: 0 !important;
+    transform: none !important;
+    margin: 0 auto !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .game-container {
+    justify-content: center !important;
+  }
+}
+
+/* 针对Edge移动版的额外兼容代码 */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .game-board {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: auto !important;
   }
 }
 

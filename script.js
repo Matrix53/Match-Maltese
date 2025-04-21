@@ -408,4 +408,85 @@ function ensureButtonVisibility() {
       footer.style.paddingBottom = '5px';
     }
   }
+  
+  // 处理游戏板的居中问题，特别是在移动版Edge
+  ensureGameBoardCentering();
+}
+
+// 确保游戏板在所有浏览器中居中
+function ensureGameBoardCentering() {
+  // 获取游戏板元素
+  const gameBoard = document.querySelector('.game-board');
+  if (!gameBoard) return;
+  
+  // 判断浏览器类型
+  const isEdge = navigator.userAgent.indexOf('Edge') !== -1 || navigator.userAgent.indexOf('Edg') !== -1;
+  const isEdgeMobile = isEdge && navigator.userAgent.indexOf('Mobile') !== -1;
+  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
+  
+  // 应用通用居中样式
+  gameBoard.style.position = 'relative';
+  gameBoard.style.margin = 'auto';
+  
+  if (isEdgeMobile) {
+    // 针对手机版Edge的特殊处理
+    gameBoard.style.position = 'absolute';
+    gameBoard.style.top = '50%';
+    gameBoard.style.left = '50%';
+    gameBoard.style.transform = 'translate(-50%, -50%)';
+    
+    // 确保游戏容器也居中对齐
+    const container = document.querySelector('.game-container');
+    if (container) {
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.height = '100vh';
+    }
+    
+    // 调整顶部信息栏，确保它不会与游戏板重叠
+    const header = document.querySelector('.game-header');
+    if (header) {
+      header.style.position = 'absolute';
+      header.style.top = '10px';
+      header.style.zIndex = '5';
+    }
+    
+    // 调整底部按钮，确保它们可见
+    const footer = document.querySelector('.game-footer');
+    if (footer) {
+      footer.style.position = 'absolute';
+      footer.style.bottom = '10px';
+      footer.style.zIndex = '5';
+    }
+  } else if (isFirefox && window.innerWidth < 768) {
+    // 针对手机版Firefox的特殊处理
+    gameBoard.style.marginTop = '80px'; // 给顶部留出空间
+    gameBoard.style.marginBottom = '80px'; // 给底部留出空间
+  }
+
+  // 在窗口大小改变时重新应用居中
+  window.addEventListener('resize', function() {
+    // 短暂延迟以确保所有布局计算完成
+    setTimeout(() => {
+      // 重新应用居中逻辑
+      if (isEdgeMobile) {
+        gameBoard.style.position = 'absolute';
+        gameBoard.style.top = '50%';
+        gameBoard.style.left = '50%';
+        gameBoard.style.transform = 'translate(-50%, -50%)';
+      }
+    }, 100);
+  });
+  
+  // 在页面加载完成后再次应用居中，确保所有资源都已加载
+  window.addEventListener('load', function() {
+    if (isEdgeMobile) {
+      gameBoard.style.position = 'absolute';
+      gameBoard.style.top = '50%';
+      gameBoard.style.left = '50%';
+      gameBoard.style.transform = 'translate(-50%, -50%)';
+    }
+  });
 }
