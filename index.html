@@ -9,6 +9,8 @@
     <meta name="theme-color" content="#f5f0e8" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- 添加Edge移动版特殊处理 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>线条小狗连连看</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&display=swap"
@@ -21,9 +23,9 @@
     <div class="background-animation"></div>
 
     <!-- 游戏容器 -->
-    <div class="game-container">
+    <div class="game-container" style="min-height: 100vh; padding: 20px 10px; display: flex; flex-direction: column; justify-content: space-between;">
       <!-- 顶部信息栏 -->
-      <div class="game-header">
+      <div class="game-header" style="width: 100%; padding: 10px; margin-top: 10px; z-index: 10;">
         <div class="status-wrapper">
           <div class="status-item">
             <div class="status-label">得分</div>
@@ -37,15 +39,13 @@
       </div>
 
       <!-- 游戏区域 -->
-      <div class="game-board">
-        <!-- 卡片将通过JS动态生成 -->
-      </div>
+      <div class="game-board" style="margin: 20px auto; position: relative; border-radius: 15px;"></div>
 
       <!-- 底部控制区 -->
-      <div class="game-footer" style="display: flex; width: 100%;">
-        <button id="start-btn" class="game-btn" style="display: inline-block;">开始游戏</button>
-        <button id="music-btn" class="game-btn" style="display: inline-block;">🔈 音乐关</button>
-        <button id="rank-btn" class="game-btn" style="display: inline-block;">排行榜</button>
+      <div class="game-footer" style="width: 100%; display: flex !important; justify-content: space-around; padding: 10px 5px; margin-top: 15px; margin-bottom: 15px; z-index: 1000; background-color: rgba(255, 255, 255, 0.3); border-radius: 15px;">
+        <button id="start-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">开始游戏</button>
+        <button id="music-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">🔈 音乐关</button>
+        <button id="rank-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">排行榜</button>
       </div>
     </div>
 
@@ -78,7 +78,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="close-rank" class="game-btn" style="display: inline-block; visibility: visible;">关闭</button>
+          <button id="close-rank" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">关闭</button>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="save-score" class="game-btn" style="display: inline-block; visibility: visible;">保存成绩</button>
+          <button id="save-score" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">保存成绩</button>
         </div>
       </div>
     </div>

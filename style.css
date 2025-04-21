@@ -58,8 +58,8 @@ body {
 .game-container {
   width: 100%;
   max-width: 100vw;
-  height: 100vh;
-  padding: 10px;
+  min-height: 100vh;
+  padding: 15px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -71,9 +71,11 @@ body {
 .game-header {
   width: 100%;
   padding: 10px;
-  margin-bottom: 5px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  position: relative;
   flex: 0 0 auto;
-  z-index: 1;
+  z-index: 10;
 }
 
 .status-wrapper {
@@ -113,21 +115,21 @@ body {
   transform: perspective(500px) rotateX(10deg);
 }
 
-/* 游戏主体 */
+/* 游戏主体 - 使用固定位置而不是绝对位置 */
 .game-board {
-  width: min(90vw, min(90vh - 200px, 500px)); /* 设置适应屏幕的最大宽度 */
-  height: min(90vw, min(90vh - 200px, 500px)); /* 保持1:1的比例 */
-  margin: auto;
+  width: min(85vw, min(85vh - 200px, 500px));
+  height: min(85vw, min(85vh - 200px, 500px));
+  margin: 20px auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(4, 1fr);
   grid-gap: min(2vmin, 10px);
   padding: min(2vmin, 10px);
-  flex: 1 0 auto; /* 让它可以增长但不收缩 */
-  position: relative; /* 添加相对定位 */
-  left: 50%; /* 水平居中定位 */
-  transform: translateX(-50%); /* 水平居中定位的校正 */
-  max-height: calc(100vh - 200px); /* 确保不超出屏幕 */
+  flex: 0 1 auto; 
+  position: relative;
+  border-radius: 15px;
+  z-index: 5;
+  background-color: rgba(255, 255, 255, 0.05); 
 }
 
 /* 游戏卡片 */
@@ -249,24 +251,25 @@ body {
 /* 游戏底部 */
 .game-footer {
   width: 100%;
-  display: flex !important; /* 强制使用flex布局 */
+  display: flex !important;
   flex-wrap: wrap;
   justify-content: space-around;
-  padding: 10px 0;
-  margin-top: 5px;
+  align-items: center;
+  padding: 10px 5px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   flex: 0 0 auto;
-  position: relative; /* 确保位置 */
-  z-index: 5; /* 提高层级，确保可见 */
-  bottom: 0; /* 确保底部对齐 */
-  left: 0;
-  right: 0;
-  background-color: rgba(255, 255, 255, 0.1); /* 添加轻微背景以增强可见性 */
+  position: relative;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 按钮样式 */
 .game-btn {
   display: inline-block !important; /* 强制显示 */
-  visibility: visible !important; /* 强制可见 */
+  visibility: visible !important; /* 修正为正确的 important 关键字 */
   opacity: 1 !important; /* 确保不透明 */
   padding: 10px 15px; 
   font-family: 'Baloo 2', cursive;
@@ -289,6 +292,7 @@ body {
   appearance: none;
   -webkit-transform: translateZ(0); /* 启用硬件加速以避免某些移动浏览器中的渲染问题 */
   transform: translateZ(0);
+  z-index: 100; /* 提高按钮的层级，确保它们显示在最上层 */
 }
 
 .game-btn::before {
@@ -586,52 +590,48 @@ body {
 @supports (-ms-ime-align: auto) {
   .game-footer {
     position: fixed;
-    bottom: 10px;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
   
   .game-btn {
     transform: none !important;
     display: inline-block !important;
     visibility: visible !important;
+    opacity: 1 !important;
   }
   
   /* 针对Edge移动版的游戏板居中修复 */
   .game-board {
-    left: 0 !important;
-    transform: none !important;
     margin: 0 auto !important;
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
+    max-height: calc(100vh - 300px) !important; /* 确保留出足够空间给按钮 */
   }
   
   .game-container {
     justify-content: center !important;
-  }
-}
-
-/* 针对Edge移动版的额外兼容代码 */
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-  .game-board {
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    margin: auto !important;
-  }
-}
-
-/* 新增对手机Edge浏览器的特殊兼容处理 */
-@supports (-ms-ime-align: auto) {
-  .game-footer {
-    position: fixed;
-    bottom: 10px;
+    align-items: center !important;
+    padding-top: 60px !important; /* 顶部增加空间 */
+    padding-bottom: 80px !important; /* 底部增加空间给按钮 */
   }
   
-  .game-btn {
-    transform: none !important;
-    display: inline-block !important;
-    visibility: visible !important;
+  /* 确保顶部信息条可见 */
+  .game-header {
+    position: absolute !important;
+    top: 10px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 100 !important;
   }
 }
