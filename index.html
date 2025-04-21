@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>线条小狗连连看</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- 游戏背景 -->
+    <div class="background-animation"></div>
+
+    <!-- 游戏容器 -->
+    <div class="game-container">
+      <!-- 顶部信息栏 -->
+      <div class="game-header">
+        <div class="status-wrapper">
+          <div class="status-item">
+            <div class="status-label">得分</div>
+            <div id="score" class="status-value">0</div>
+          </div>
+          <div class="status-item">
+            <div class="status-label">用时</div>
+            <div id="time" class="status-value">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 游戏区域 -->
+      <div class="game-board">
+        <!-- 卡片将通过JS动态生成 -->
+      </div>
+
+      <!-- 底部控制区 -->
+      <div class="game-footer">
+        <button id="start-btn" class="game-btn">开始游戏</button>
+        <button id="music-btn" class="game-btn">🔈 音乐关</button>
+        <button id="rank-btn" class="game-btn">排行榜</button>
+      </div>
+    </div>
+
+    <!-- 背景音乐 -->
+    <audio id="bg-music" loop preload="auto">
+      <source src="sounds/background.mp3" type="audio/mp3" />
+    </audio>
+
+    <!-- 音效（预加载但不自动播放） -->
+    <audio id="score-sound" preload="auto">
+      <source src="sounds/score.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="win-sound" preload="auto">
+      <source src="sounds/win.mp3" type="audio/mp3" />
+    </audio>
+
+    <!-- 排行榜模态框 -->
+    <div id="rank-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>排行榜</h2>
+        </div>
+        <div class="modal-body">
+          <div id="rank-list" class="rank-list">
+            <!-- 排行榜内容通过JS生成 -->
+          </div>
+          <div id="empty-rank" class="empty-rank">
+            <div class="paw-print"></div>
+            <p>人都不在，狗狗占领了排行榜</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="close-rank" class="game-btn">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 胜利模态框 -->
+    <div id="win-modal" class="modal">
+      <div class="modal-content win-modal-content">
+        <div class="modal-header">
+          <h2>小狗觉得你棒棒~</h2>
+        </div>
+        <div class="modal-body">
+          <div class="win-image">
+            <img src="images/win.jpeg" alt="胜利" />
+          </div>
+          <div class="win-stats">
+            <p>得分: <span id="final-score">0</span></p>
+            <p>用时: <span id="final-time">0</span>秒</p>
+          </div>
+          <div class="player-name-input">
+            <label for="player-name">留下你的名字:</label>
+            <input
+              type="text"
+              id="player-name"
+              placeholder="嗯......要叫什么好呢？"
+              maxlength="10"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="save-score" class="game-btn">保存成绩</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

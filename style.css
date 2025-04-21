@@ -1,0 +1,490 @@
+/* 全局样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Baloo 2', cursive, sans-serif;
+  background-color: #f5f0e8;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 背景动画 */
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(45deg, #f5f0e8, #e8dfca);
+  overflow: hidden;
+}
+
+.background-animation::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(255, 237, 213, 0.3) 10px, transparent 10px),
+    radial-gradient(circle at 75% 75%, rgba(255, 237, 213, 0.3) 15px, transparent 15px),
+    radial-gradient(circle at 50% 50%, rgba(255, 237, 213, 0.3) 20px, transparent 20px);
+  background-size: 100px 100px;
+  animation: backgroundMove 20s linear infinite;
+}
+
+@keyframes backgroundMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100px 100px;
+  }
+}
+
+/* 游戏容器 */
+.game-container {
+  width: 100vw;
+  max-width: 500px;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* 游戏头部 */
+.game-header {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  z-index: 1;
+}
+
+.status-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
+              inset 0 0 0 3px #fff,
+              inset 0 0 0 6px #ffbb7b;
+}
+
+.status-item {
+  text-align: center;
+  flex: 1;
+}
+
+.status-label {
+  font-size: 1rem;
+  color: #8e7a60;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff9c52;
+  text-shadow: 
+    2px 2px 0 #fff,
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: perspective(500px) rotateX(10deg);
+}
+
+/* 游戏主体 */
+.game-board {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  padding: 10px;
+  margin: auto;
+  position: relative;
+}
+
+/* 游戏卡片 */
+.card {
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-front {
+  background-color: #fff;
+  transform: rotateY(180deg);
+  overflow: hidden;
+}
+
+.card-front img {
+  width: 90%;
+  height: 90%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.card-back {
+  background-color: #ffbb7b;
+  background-image: 
+    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%), 
+    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  border: 5px solid white;
+}
+
+.card-back::before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  background-image: url(images/paw.min.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 卡片匹配效果 */
+.card.matched .card-inner {
+  animation: matchedAnimation 0.6s;
+  box-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00;
+}
+
+@keyframes matchedAnimation {
+  0%, 100% {
+    transform: rotateY(180deg) scale(1);
+  }
+  50% {
+    transform: rotateY(180deg) scale(1.1);
+  }
+}
+
+/* 分数弹出效果 */
+.score-popup {
+  position: absolute;
+  color: #ff9c52;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 white;
+  pointer-events: none;
+  animation: scorePopup 1.5s forwards;
+  z-index: 10;
+}
+
+@keyframes scorePopup {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-20px) scale(1.5);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(-40px) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-60px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* 游戏底部 */
+.game-footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 0;
+  margin-top: 10px;
+}
+
+/* 按钮样式 */
+.game-btn {
+  padding: 12px 20px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #ff9c52;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 0 #d87d35,
+    0 5px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: 0.5s;
+}
+
+.game-btn:hover::before {
+  left: 100%;
+}
+
+.game-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 #d87d35, 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.game-btn.active {
+  background: #4caf50;
+  box-shadow: 
+    0 4px 0 #388e3c,
+    0 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 模态框样式 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background-color: #fff;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  border-radius: 20px;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.modal-header {
+  background-color: #ffbb7b;
+  padding: 15px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.modal-footer {
+  padding: 15px;
+  text-align: center;
+  border-top: 1px solid #eee;
+}
+
+/* 排行榜样式 */
+.rank-list {
+  width: 100%;
+}
+
+.rank-header {
+  display: flex;
+  background-color: #f5f0e8;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+  padding: 10px 0;
+}
+
+.rank-col {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+}
+
+.rank-item {
+  display: flex;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.rank-item:last-child {
+  border-bottom: none;
+}
+
+.top-rank {
+  background-color: rgba(255, 187, 123, 0.2);
+  font-weight: bold;
+}
+
+.empty-rank {
+  text-align: center;
+  padding: 20px 0;
+  color: #888;
+  display: none;
+  position: relative;
+}
+
+.paw-print {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 20px;
+  opacity: 0.2;
+  background-image: url(images/love.min.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 胜利模态框特殊样式 */
+.win-modal-content {
+  background-color: #fffaf0;
+}
+
+.win-image {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.win-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.win-stats {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.win-stats span {
+  font-weight: bold;
+  color: #ff9c52;
+}
+
+.player-name-input {
+  margin-top: 15px;
+}
+
+.player-name-input label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.player-name-input input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ffbb7b;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.player-name-input input:focus {
+  border-color: #ff9c52;
+  box-shadow: 0 0 0 3px rgba(255, 156, 82, 0.3);
+}
+
+/* 响应式调整 */
+@media (max-width: 375px) {
+  .status-label {
+    font-size: 0.9rem;
+  }
+  
+  .status-value {
+    font-size: 1.7rem;
+  }
+  
+  .game-btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+}
+
+/* 确保动画平滑 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

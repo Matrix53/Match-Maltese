@@ -1,0 +1,362 @@
+// DOM元素
+const gameBoard = document.querySelector('.game-board')
+const scoreElement = document.getElementById('score')
+const timeElement = document.getElementById('time')
+const startBtn = document.getElementById('start-btn')
+const musicBtn = document.getElementById('music-btn')
+const rankBtn = document.getElementById('rank-btn')
+const bgMusic = document.getElementById('bg-music')
+const rankModal = document.getElementById('rank-modal')
+const winModal = document.getElementById('win-modal')
+const rankList = document.getElementById('rank-list')
+const emptyRank = document.getElementById('empty-rank')
+const closeRankBtn = document.getElementById('close-rank')
+const finalScoreElement = document.getElementById('final-score')
+const finalTimeElement = document.getElementById('final-time')
+const playerNameInput = document.getElementById('player-name')
+const saveScoreBtn = document.getElementById('save-score')
+
+// 音效元素
+const scoreSound = document.getElementById('score-sound')
+const winSound = document.getElementById('win-sound')
+
+// 游戏状态
+let cards = []
+let score = 0
+let timeElapsed = 0
+let gameTimer = null
+let scoreTimer = null
+let firstCard = null
+let secondCard = null
+let lockBoard = false
+let matchedPairs = 0
+let currentPotentialScore = 200 // 每对卡片的最高得分
+
+// 初始化游戏
+function initGame() {
+  clearInterval(gameTimer)
+  clearInterval(scoreTimer)
+  cards = []
+  score = 0
+  timeElapsed = 0
+  matchedPairs = 0
+  lockBoard = false
+  firstCard = null
+  secondCard = null
+  currentPotentialScore = 200
+
+  // 更新显示
+  scoreElement.textContent = score
+  timeElement.textContent = timeElapsed
+
+  // 清空游戏板
+  gameBoard.innerHTML = ''
+
+  // 创建卡片
+  createCards()
+
+  // 启动计时器
+  gameTimer = setInterval(() => {
+    timeElapsed++
+    timeElement.textContent = timeElapsed
+  }, 1000)
+
+  // 启动分数递减计时器
+  scoreTimer = setInterval(() => {
+    if (currentPotentialScore > 1) {
+      currentPotentialScore--
+    }
+  }, 1000)
+}
+
+// 创建卡片
+function createCards() {
+  // 随机选择8种图片
+  const availableCards = Array.from({ length: 15 }, (_, i) => i + 1)
+  const selectedCards = []
+
+  while (selectedCards.length < 8) {
+    const randomIndex = Math.floor(Math.random() * availableCards.length)
+    selectedCards.push(availableCards[randomIndex])
+    availableCards.splice(randomIndex, 1)
+  }
+
+  // 每种图片出现两次
+  const cardPairs = [...selectedCards, ...selectedCards]
+
+  // 随机排序
+  shuffle(cardPairs)
+
+  // 创建卡片元素
+  cardPairs.forEach((cardId, index) => {
+    const card = document.createElement('div')
+    card.classList.add('card')
+    card.dataset.card = cardId
+
+    const cardInner = document.createElement('div')
+    cardInner.classList.add('card-inner')
+
+    const cardFront = document.createElement('div')
+    cardFront.classList.add('card-front')
+
+    const cardImage = document.createElement('img')
+    cardImage.src = `images/card${cardId}.jpeg`
+    cardImage.alt = `Card ${cardId}`
+
+    const cardBack = document.createElement('div')
+    cardBack.classList.add('card-back')
+
+    cardFront.appendChild(cardImage)
+    cardInner.appendChild(cardFront)
+    cardInner.appendChild(cardBack)
+    card.appendChild(cardInner)
+
+    card.addEventListener('click', flipCard)
+
+    gameBoard.appendChild(card)
+    cards.push(card)
+  })
+}
+
+// 洗牌函数
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
+// 翻牌
+function flipCard() {
+  if (lockBoard) return
+  if (this === firstCard) return
+
+  this.classList.add('flipped')
+
+  if (!firstCard) {
+    // 第一次点击
+    firstCard = this
+    return
+  }
+
+  // 第二次点击
+  secondCard = this
+  checkForMatch()
+}
+
+// 检查匹配
+function checkForMatch() {
+  const isMatch = firstCard.dataset.card === secondCard.dataset.card
+
+  if (isMatch) {
+    addScore()
+    disableCards()
+  } else {
+    unflipCards()
+  }
+}
+
+// 添加得分
+function addScore() {
+  // 添加得分
+  score += currentPotentialScore
+  scoreElement.textContent = score
+
+  // 播放得分音效
+  scoreSound.play()
+
+  // 显示加分动画
+  const scorePopup = document.createElement('div')
+  scorePopup.classList.add('score-popup')
+  scorePopup.textContent = `+${currentPotentialScore}`
+
+  // 计算加分动画位置（两张卡片中间）
+  const firstRect = firstCard.getBoundingClientRect()
+  const secondRect = secondCard.getBoundingClientRect()
+  const x = (firstRect.left + secondRect.left) / 2 + firstRect.width / 2
+  const y = (firstRect.top + secondRect.top) / 2 + firstRect.height / 2
+
+  scorePopup.style.left = `${x - gameBoard.getBoundingClientRect().left}px`
+  scorePopup.style.top = `${y - gameBoard.getBoundingClientRect().top}px`
+
+  gameBoard.appendChild(scorePopup)
+
+  // 卡片匹配动画
+  firstCard.classList.add('matched')
+  secondCard.classList.add('matched')
+
+  // 清除动画元素
+  setTimeout(() => {
+    gameBoard.removeChild(scorePopup)
+  }, 1500)
+
+  // 重置当前分数计算器
+  currentPotentialScore = 200
+
+  // 检查游戏是否结束
+  matchedPairs++
+  if (matchedPairs === 8) {
+    setTimeout(() => {
+      endGame()
+    }, 1000)
+  }
+}
+
+// 禁用已匹配的卡片
+function disableCards() {
+  firstCard.removeEventListener('click', flipCard)
+  secondCard.removeEventListener('click', flipCard)
+  resetBoard()
+}
+
+// 翻回不匹配的卡片
+function unflipCards() {
+  lockBoard = true
+
+  setTimeout(() => {
+    firstCard.classList.remove('flipped')
+    secondCard.classList.remove('flipped')
+    resetBoard()
+  }, 1500)
+}
+
+// 重置面板状态
+function resetBoard() {
+  [firstCard, secondCard] = [null, null]
+  lockBoard = false
+}
+
+// 结束游戏
+function endGame() {
+  clearInterval(gameTimer)
+  clearInterval(scoreTimer)
+
+  // 播放胜利音效
+  winSound.play()
+
+  // 显示最终分数和时间
+  finalScoreElement.textContent = score
+  finalTimeElement.textContent = timeElapsed
+
+  // 显示胜利模态框
+  winModal.style.display = 'flex'
+}
+
+// 保存分数
+function saveScore() {
+  const playerName = playerNameInput.value.trim() || '匿名'
+  
+  // 获取现有排行榜
+  let leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  
+  // 添加新分数
+  leaderboard.push({
+    name: playerName,
+    score: score,
+    time: timeElapsed,
+    date: new Date().toISOString()
+  })
+  
+  // 按分数从高到低排序，分数相同时按时间从短到长排序
+  leaderboard.sort((a, b) => {
+    if (b.score !== a.score) {
+      return b.score - a.score; // 首先按分数降序
+    }
+    return a.time - b.time; // 分数相同时按时间升序
+  })
+  
+  // 只保留前10名
+  if (leaderboard.length > 10) {
+    leaderboard = leaderboard.slice(0, 10)
+  }
+  
+  // 保存到本地存储
+  localStorage.setItem('dogMatchLeaderboard', JSON.stringify(leaderboard))
+  
+  // 关闭胜利模态框并显示排行榜
+  winModal.style.display = 'none'
+  showLeaderboard()
+}
+
+// 显示排行榜
+function showLeaderboard() {
+  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  
+  if (leaderboard.length === 0) {
+    rankList.innerHTML = ''
+    emptyRank.style.display = 'block'
+  } else {
+    emptyRank.style.display = 'none'
+    
+    // 构建排行榜HTML
+    let rankHTML = `
+      <div class="rank-header">
+        <span class="rank-col">排名</span>
+        <span class="rank-col">玩家</span>
+        <span class="rank-col">分数</span>
+        <span class="rank-col">用时</span>
+      </div>
+    `
+    
+    leaderboard.forEach((entry, index) => {
+      rankHTML += `
+        <div class="rank-item ${index < 3 ? 'top-rank' : ''}">
+          <span class="rank-col">${index + 1}</span>
+          <span class="rank-col">${entry.name}</span>
+          <span class="rank-col">${entry.score}</span>
+          <span class="rank-col">${entry.time}秒</span>
+        </div>
+      `
+    })
+    
+    rankList.innerHTML = rankHTML
+  }
+  
+  rankModal.style.display = 'flex'
+}
+
+// 控制音乐
+function toggleMusic() {
+  if (bgMusic.paused) {
+    bgMusic.play()
+    musicBtn.textContent = '🔊 音乐开'
+    musicBtn.classList.add('active')
+  } else {
+    bgMusic.pause()
+    musicBtn.textContent = '🔈 音乐关'
+    musicBtn.classList.remove('active')
+  }
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
+  // 绑定按钮事件
+  startBtn.addEventListener('click', initGame)
+  musicBtn.addEventListener('click', toggleMusic)
+  rankBtn.addEventListener('click', showLeaderboard)
+  closeRankBtn.addEventListener('click', () => rankModal.style.display = 'none')
+  saveScoreBtn.addEventListener('click', saveScore)
+  
+  // 3秒后自动播放背景音乐
+  setTimeout(() => {
+    bgMusic.play().then(() => {
+      musicBtn.textContent = '🔊 音乐开'
+      musicBtn.classList.add('active')
+    }).catch(err => {
+      console.log('自动播放音乐失败:', err)
+      // 手机浏览器通常需要用户交互才能播放音频
+    })
+  }, 3000)
+
+  // 初始显示排行榜（用于更新是否为空的状态）
+  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  if (leaderboard.length === 0) {
+    emptyRank.style.display = 'block'
+  } else {
+    emptyRank.style.display = 'none'
+  }
+
+  // 初始化游戏
+  initGame()
+})
