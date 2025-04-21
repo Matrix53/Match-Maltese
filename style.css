@@ -56,10 +56,10 @@ body {
 
 /* 游戏容器 */
 .game-container {
-  width: 100vw;
-  max-width: 500px;
-  min-height: 100vh;
-  padding: 20px;
+  width: 100%;
+  max-width: 100vw;
+  height: 100vh;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -70,8 +70,9 @@ body {
 /* 游戏头部 */
 .game-header {
   width: 100%;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 5px;
+  flex: 0 0 auto;
   z-index: 1;
 }
 
@@ -114,29 +115,31 @@ body {
 
 /* 游戏主体 */
 .game-board {
-  width: 100%;
-  max-width: 400px;
-  aspect-ratio: 1 / 1;
+  width: min(90vw, min(90vh - 200px, 500px)); /* 设置适应屏幕的最大宽度 */
+  height: min(90vw, min(90vh - 200px, 500px)); /* 保持1:1的比例 */
+  margin: auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  padding: 10px;
-  margin: auto;
-  position: relative;
+  grid-template-rows: repeat(4, 1fr);
+  grid-gap: min(2vmin, 10px);
+  padding: min(2vmin, 10px);
+  flex: 0 1 auto; /* 允许它收缩但不增长 */
 }
 
 /* 游戏卡片 */
 .card {
   width: 100%;
-  height: 100%;
+  height: 0;
+  padding-bottom: 100%; /* 确保卡片始终是正方形 */
+  position: relative;
   perspective: 1000px;
   cursor: pointer;
 }
 
 .card-inner {
+  position: absolute;
   width: 100%;
   height: 100%;
-  position: relative;
   transform-style: preserve-3d;
   transition: transform 0.5s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -242,14 +245,17 @@ body {
 .game-footer {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
-  padding: 20px 0;
-  margin-top: 10px;
+  padding: 10px 0;
+  margin-top: 5px;
+  flex: 0 0 auto;
+  position: relative; /* 确保位置 */
 }
 
 /* 按钮样式 */
 .game-btn {
-  padding: 12px 20px;
+  padding: 10px 15px; /* 减小按钮内边距 */
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
   font-weight: bold;
@@ -264,6 +270,7 @@ body {
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
+  margin: 5px; /* 添加按钮间距，防止在小屏幕上太靠近 */
 }
 
 .game-btn::before {
@@ -468,12 +475,78 @@ body {
   }
   
   .game-btn {
-    padding: 10px 15px;
-    font-size: 0.9rem;
+    padding: 8px 12px; /* 更小的按钮内边距 */
+    font-size: 0.85rem; /* 更小的字体大小 */
+    margin: 3px; /* 更小的按钮间距 */
   }
   
   .modal-content {
     width: 95%;
+  }
+  
+  .game-board {
+    width: min(95vw, min(95vh - 150px, 500px));
+    height: min(95vw, min(95vh - 150px, 500px));
+    grid-gap: 5px;
+    padding: 5px;
+  }
+  
+  .game-container {
+    padding: 5px; /* 更小的内边距 */
+    justify-content: flex-start; /* 从顶部开始 */
+  }
+  
+  .game-header {
+    padding: 5px; /* 更小的内边距 */
+  }
+}
+
+/* 新增针对中小型手机的特殊处理 */
+@media (max-height: 600px) {
+  .game-board {
+    width: min(90vw, min(90vh - 120px, 500px));
+    height: min(90vw, min(90vh - 120px, 500px));
+  }
+  
+  .game-footer {
+    padding: 5px 0;
+  }
+  
+  .game-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* 确保布局在横屏模式下也正常工作 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100vh;
+    align-content: center;
+  }
+  
+  .game-header {
+    width: 30%;
+    order: 1;
+  }
+  
+  .game-board {
+    width: min(70vh, min(70vw - 200px, 500px));
+    height: min(70vh, min(70vw - 200px, 500px));
+    order: 2;
+  }
+  
+  .game-footer {
+    width: 30%;
+    flex-direction: column;
+    order: 3;
+    align-items: center;
+  }
+  
+  .game-btn {
+    margin: 5px 0;
   }
 }
 
