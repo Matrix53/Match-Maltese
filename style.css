@@ -177,7 +177,7 @@ body {
 .card-back {
   background-color: #ffbb7b;
   background-image: 
-    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%), 
+    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%),
     linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%);
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
@@ -244,18 +244,21 @@ body {
 /* 游戏底部 */
 .game-footer {
   width: 100%;
-  display: flex;
+  display: flex !important; /* 强制使用flex布局 */
   flex-wrap: wrap;
   justify-content: space-around;
   padding: 10px 0;
   margin-top: 5px;
   flex: 0 0 auto;
   position: relative; /* 确保位置 */
+  z-index: 5; /* 提高层级，确保可见 */
 }
 
 /* 按钮样式 */
 .game-btn {
-  padding: 10px 15px; /* 减小按钮内边距 */
+  display: inline-block !important; /* 强制显示 */
+  visibility: visible !important; /* 强制可见 */
+  padding: 10px 15px; 
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
   font-weight: bold;
@@ -270,7 +273,8 @@ body {
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
-  margin: 5px; /* 添加按钮间距，防止在小屏幕上太靠近 */
+  margin: 5px; 
+  min-width: 90px; /* 确保按钮有最小宽度 */
 }
 
 .game-btn::before {
