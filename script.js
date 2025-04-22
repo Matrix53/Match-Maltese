@@ -16,6 +16,8 @@ const finalScoreElement = document.getElementById('final-score')
 const finalTimeElement = document.getElementById('final-time')
 const playerNameInput = document.getElementById('player-name')
 const saveScoreBtn = document.getElementById('save-score')
+const gameHeader = document.querySelector('.game-header')
+const gameFooter = document.querySelector('.game-footer')
 
 // 音效元素
 const scoreSound = document.getElementById('score-sound')
@@ -445,6 +447,9 @@ function toggleMusic() {
 document.addEventListener('DOMContentLoaded', () => {
   // 确保按钮在所有平台上可见
   ensureButtonVisibility()
+  
+  // 确保宽屏上的布局一致性
+  ensureWideScreenLayout()
 
   // 绑定按钮事件
   startBtn.addEventListener('click', initGame)
@@ -479,6 +484,9 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     emptyRank.style.display = 'none'
   }
+
+  // 监听窗口大小变化，以便调整宽屏布局
+  window.addEventListener('resize', ensureWideScreenLayout)
 
   // 初始化游戏
   initGame()
@@ -641,11 +649,32 @@ function ensureGameBoardCentering() {
     }
   }
 
+  // 应用宽屏布局适配
+  ensureWideScreenLayout()
+
   // 添加窗口大小变化监听器
   window.addEventListener('resize', function () {
     setTimeout(() => {
       // 重新应用布局逻辑，确保窗口改变大小后仍然保持正确的布局
       ensureGameBoardCentering()
+      // 重新应用宽屏布局适配
+      ensureWideScreenLayout()
     }, 100)
   })
+}
+
+// 确保在宽屏上的布局一致性
+function ensureWideScreenLayout() {
+  if (!gameBoard || !gameHeader || !gameFooter) return;
+  
+  const gameBoardWidth = gameBoard.offsetWidth;
+  
+  // 设置顶部和底部区域宽度与游戏区域相同
+  if (gameHeader) {
+    gameHeader.style.maxWidth = `${gameBoardWidth}px`;
+  }
+  
+  if (gameFooter) {
+    gameFooter.style.maxWidth = `${gameBoardWidth}px`;
+  }
 }

@@ -23,9 +23,9 @@
     <div class="background-animation"></div>
 
     <!-- 游戏容器 -->
-    <div class="game-container" style="min-height: 100vh; padding: 20px 10px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="game-container" style="min-height: 100vh; padding: 20px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
       <!-- 顶部信息栏 -->
-      <div class="game-header" style="width: 100%; padding: 10px; margin-top: 10px; z-index: 10;">
+      <div class="game-header" style="width: 100%; max-width: min(85vw, min(85vh - 200px, 500px)); padding: 10px; margin-top: 10px; z-index: 10;">
         <div class="status-wrapper">
           <div class="status-item">
             <div class="status-label">得分</div>
@@ -42,7 +42,7 @@
       <div class="game-board" style="margin: 20px auto; position: relative; border-radius: 15px;"></div>
 
       <!-- 底部控制区 -->
-      <div class="game-footer" style="width: 100%; display: flex !important; justify-content: space-around; padding: 10px 5px; margin-top: 15px; margin-bottom: 15px; z-index: 1000; background-color: rgba(255, 255, 255, 0.3); border-radius: 15px;">
+      <div class="game-footer" style="width: 100%; max-width: min(85vw, min(85vh - 200px, 500px)); display: flex !important; justify-content: space-around; padding: 10px 5px; margin-top: 15px; margin-bottom: 15px; z-index: 1000; background-color: rgba(255, 255, 255, 0.3); border-radius: 15px;">
         <button id="start-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">开始游戏</button>
         <button id="music-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">🔈 音乐关</button>
         <button id="rank-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">排行榜</button>

@@ -41,7 +41,7 @@
 ### 文件结构
 
 ```
-game/
+Match-Maltese/
 ├── index.html        # 游戏主页面
 ├── style.css         # 样式表
 ├── script.js         # 游戏逻辑
