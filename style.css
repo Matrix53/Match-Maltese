@@ -374,6 +374,50 @@ body {
   padding: 15px;
   text-align: center;
   border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* 新增通知样式 */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ff9c52;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  font-weight: bold;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+  max-width: 80%;
+  border: 3px solid white;
+  animation: notificationAppear 2.5s ease forwards;
+}
+
+@keyframes notificationAppear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
 }
 
 /* 排行榜样式 */
@@ -522,6 +566,11 @@ body {
   
   .game-header {
     padding: 5px; /* 更小的内边距 */
+  }
+
+  .notification {
+    padding: 10px 15px;
+    font-size: 0.9rem;
   }
 }
 

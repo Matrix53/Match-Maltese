@@ -11,6 +11,7 @@ const winModal = document.getElementById('win-modal')
 const rankList = document.getElementById('rank-list')
 const emptyRank = document.getElementById('empty-rank')
 const closeRankBtn = document.getElementById('close-rank')
+const shareRankBtn = document.getElementById('share-rank')
 const finalScoreElement = document.getElementById('final-score')
 const finalTimeElement = document.getElementById('final-time')
 const playerNameInput = document.getElementById('player-name')
@@ -323,6 +324,83 @@ function showLeaderboard() {
   rankModal.style.display = 'flex'
 }
 
+// 分享排行榜
+function shareRanking() {
+  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  const pageUrl = window.location.href
+  let shareText = ''
+  
+  // 根据排行榜情况选择分享模板
+  if (leaderboard.length === 0) {
+    shareText = `【线条小狗连连看】我发现了一个超可爱的线条小狗主题游戏，快来和我一起挑战吧！${pageUrl}`
+  } else {
+    shareText = `【线条小狗连连看】我在这个线条小狗主题游戏中获得了第一名，共获得${leaderboard[0].score}分，仅用时${leaderboard[0].time}秒！你也来试试吧！${pageUrl}`
+  }
+
+  // 复制到剪贴板
+  copyToClipboard(shareText)
+  
+  // 显示成功通知
+  showNotification('链接已复制到剪贴板')
+}
+
+// 复制文本到剪贴板
+function copyToClipboard(text) {
+  // 创建临时元素
+  const tempEl = document.createElement('textarea')
+  tempEl.value = text
+  tempEl.style.position = 'absolute'
+  tempEl.style.left = '-9999px'
+  document.body.appendChild(tempEl)
+  
+  // 选择并复制文本
+  tempEl.select()
+  tempEl.setSelectionRange(0, 99999) // 对于移动设备
+  
+  try {
+    const successful = document.execCommand('copy')
+    if (!successful) {
+      // 如果execCommand不可用，尝试使用Clipboard API
+      navigator.clipboard.writeText(text).catch(err => {
+        console.error('无法复制文本: ', err)
+      })
+    }
+  } catch (err) {
+    console.error('无法复制文本: ', err)
+    // 尝试使用Clipboard API作为备选方案
+    navigator.clipboard.writeText(text).catch(err => {
+      console.error('Clipboard API也失败: ', err)
+    })
+  }
+  
+  // 删除临时元素
+  document.body.removeChild(tempEl)
+}
+
+// 显示通知
+function showNotification(message) {
+  // 检查是否已有通知，如果有则移除
+  const existingNotification = document.querySelector('.notification')
+  if (existingNotification) {
+    document.body.removeChild(existingNotification)
+  }
+  
+  // 创建通知元素
+  const notification = document.createElement('div')
+  notification.classList.add('notification')
+  notification.textContent = message
+  
+  // 添加到页面
+  document.body.appendChild(notification)
+  
+  // 自动移除通知
+  setTimeout(() => {
+    if (document.body.contains(notification)) {
+      document.body.removeChild(notification)
+    }
+  }, 2500)
+}
+
 // 控制音乐
 function toggleMusic() {
   if (bgMusic.paused) {
@@ -347,6 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
   rankBtn.addEventListener('click', showLeaderboard)
   closeRankBtn.addEventListener('click', () => rankModal.style.display = 'none')
   saveScoreBtn.addEventListener('click', saveScore)
+  shareRankBtn.addEventListener('click', shareRanking)
   
   // 3秒后自动播放背景音乐
   setTimeout(() => {
