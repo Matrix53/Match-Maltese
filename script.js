@@ -73,7 +73,7 @@ function initGame() {
 // 创建卡片
 function createCards() {
   // 随机选择8种图片
-  const availableCards = Array.from({ length: 15 }, (_, i) => i + 1)
+  const availableCards = Array.from({ length: 54 }, (_, i) => i)
   const selectedCards = []
 
   while (selectedCards.length < 8) {
@@ -105,7 +105,7 @@ function createCards() {
     cardFront.style.webkitBackfaceVisibility = 'hidden'
 
     const cardImage = document.createElement('img')
-    cardImage.src = `images/card${cardId}.jpeg`
+    cardImage.src = `images/cards/card${cardId}.jpeg`
     cardImage.alt = `Card ${cardId}`
 
     const cardBack = document.createElement('div')
@@ -231,7 +231,7 @@ function unflipCards() {
 
 // 重置面板状态
 function resetBoard() {
-  [firstCard, secondCard] = [null, null]
+  ;[firstCard, secondCard] = [null, null]
   lockBoard = false
 }
 
@@ -254,34 +254,35 @@ function endGame() {
 // 保存分数
 function saveScore() {
   const playerName = playerNameInput.value.trim() || '匿名'
-  
+
   // 获取现有排行榜
-  let leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
-  
+  let leaderboard =
+    JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+
   // 添加新分数
   leaderboard.push({
     name: playerName,
     score: score,
     time: timeElapsed,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
   })
-  
+
   // 按分数从高到低排序，分数相同时按时间从短到长排序
   leaderboard.sort((a, b) => {
     if (b.score !== a.score) {
-      return b.score - a.score; // 首先按分数降序
+      return b.score - a.score // 首先按分数降序
     }
-    return a.time - b.time; // 分数相同时按时间升序
+    return a.time - b.time // 分数相同时按时间升序
   })
-  
+
   // 只保留前10名
   if (leaderboard.length > 10) {
     leaderboard = leaderboard.slice(0, 10)
   }
-  
+
   // 保存到本地存储
   localStorage.setItem('dogMatchLeaderboard', JSON.stringify(leaderboard))
-  
+
   // 关闭胜利模态框并显示排行榜
   winModal.style.display = 'none'
   showLeaderboard()
@@ -289,14 +290,15 @@ function saveScore() {
 
 // 显示排行榜
 function showLeaderboard() {
-  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
-  
+  const leaderboard =
+    JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+
   if (leaderboard.length === 0) {
     rankList.innerHTML = ''
     emptyRank.style.display = 'block'
   } else {
     emptyRank.style.display = 'none'
-    
+
     // 构建排行榜HTML
     let rankHTML = `
       <div class="rank-header">
@@ -306,7 +308,7 @@ function showLeaderboard() {
         <span class="rank-col">用时</span>
       </div>
     `
-    
+
     leaderboard.forEach((entry, index) => {
       rankHTML += `
         <div class="rank-item ${index < 3 ? 'top-rank' : ''}">
@@ -317,19 +319,20 @@ function showLeaderboard() {
         </div>
       `
     })
-    
+
     rankList.innerHTML = rankHTML
   }
-  
+
   rankModal.style.display = 'flex'
 }
 
 // 分享排行榜
 function shareRanking() {
-  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  const leaderboard =
+    JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
   const pageUrl = window.location.href
   let shareText = ''
-  
+
   // 根据排行榜情况选择分享模板
   if (leaderboard.length === 0) {
     shareText = `【线条小狗连连看】我发现了一个超可爱的线条小狗主题游戏，快来和我一起挑战吧！${pageUrl}`
@@ -339,7 +342,7 @@ function shareRanking() {
 
   // 复制到剪贴板
   copyToClipboard(shareText)
-  
+
   // 显示成功通知
   showNotification('链接已复制到剪贴板')
 }
@@ -352,27 +355,27 @@ function copyToClipboard(text) {
   tempEl.style.position = 'absolute'
   tempEl.style.left = '-9999px'
   document.body.appendChild(tempEl)
-  
+
   // 选择并复制文本
   tempEl.select()
   tempEl.setSelectionRange(0, 99999) // 对于移动设备
-  
+
   try {
     const successful = document.execCommand('copy')
     if (!successful) {
       // 如果execCommand不可用，尝试使用Clipboard API
-      navigator.clipboard.writeText(text).catch(err => {
+      navigator.clipboard.writeText(text).catch((err) => {
         console.error('无法复制文本: ', err)
       })
     }
   } catch (err) {
     console.error('无法复制文本: ', err)
     // 尝试使用Clipboard API作为备选方案
-    navigator.clipboard.writeText(text).catch(err => {
+    navigator.clipboard.writeText(text).catch((err) => {
       console.error('Clipboard API也失败: ', err)
     })
   }
-  
+
   // 删除临时元素
   document.body.removeChild(tempEl)
 }
@@ -384,15 +387,15 @@ function showNotification(message) {
   if (existingNotification) {
     document.body.removeChild(existingNotification)
   }
-  
+
   // 创建通知元素
   const notification = document.createElement('div')
   notification.classList.add('notification')
   notification.textContent = message
-  
+
   // 添加到页面
   document.body.appendChild(notification)
-  
+
   // 自动移除通知
   setTimeout(() => {
     if (document.body.contains(notification)) {
@@ -417,29 +420,36 @@ function toggleMusic() {
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
   // 确保按钮在所有平台上可见
-  ensureButtonVisibility();
+  ensureButtonVisibility()
 
   // 绑定按钮事件
   startBtn.addEventListener('click', initGame)
   musicBtn.addEventListener('click', toggleMusic)
   rankBtn.addEventListener('click', showLeaderboard)
-  closeRankBtn.addEventListener('click', () => rankModal.style.display = 'none')
+  closeRankBtn.addEventListener(
+    'click',
+    () => (rankModal.style.display = 'none')
+  )
   saveScoreBtn.addEventListener('click', saveScore)
   shareRankBtn.addEventListener('click', shareRanking)
-  
+
   // 3秒后自动播放背景音乐
   setTimeout(() => {
-    bgMusic.play().then(() => {
-      musicBtn.textContent = '🔊 音乐开'
-      musicBtn.classList.add('active')
-    }).catch(err => {
-      console.log('自动播放音乐失败:', err)
-      // 手机浏览器通常需要用户交互才能播放音频
-    })
+    bgMusic
+      .play()
+      .then(() => {
+        musicBtn.textContent = '🔊 音乐开'
+        musicBtn.classList.add('active')
+      })
+      .catch((err) => {
+        console.log('自动播放音乐失败:', err)
+        // 手机浏览器通常需要用户交互才能播放音频
+      })
   }, 3000)
 
   // 初始显示排行榜（用于更新是否为空的状态）
-  const leaderboard = JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
+  const leaderboard =
+    JSON.parse(localStorage.getItem('dogMatchLeaderboard')) || []
   if (leaderboard.length === 0) {
     emptyRank.style.display = 'block'
   } else {
@@ -453,156 +463,165 @@ document.addEventListener('DOMContentLoaded', () => {
 // 确保按钮在所有平台上可见
 function ensureButtonVisibility() {
   // 获取所有游戏按钮
-  const allButtons = document.querySelectorAll('.game-btn');
-  
+  const allButtons = document.querySelectorAll('.game-btn')
+
   // 强制应用样式确保按钮可见
-  allButtons.forEach(button => {
+  allButtons.forEach((button) => {
     // 强制按钮可见
-    button.style.display = 'inline-block';
-    button.style.visibility = 'visible';
-    button.style.opacity = '1';
-    
+    button.style.display = 'inline-block'
+    button.style.visibility = 'visible'
+    button.style.opacity = '1'
+
     // 给按钮添加触摸事件监听器以确保在移动设备上有响应
-    button.addEventListener('touchstart', function(e) {
-      e.preventDefault(); // 防止默认行为
+    button.addEventListener('touchstart', function (e) {
+      e.preventDefault() // 防止默认行为
       // 模拟点击按钮
       setTimeout(() => {
-        this.click();
-      }, 0);
-    });
-  });
-  
+        this.click()
+      }, 0)
+    })
+  })
+
   // 特殊处理底部区域，确保它总是可见的
-  const footer = document.querySelector('.game-footer');
+  const footer = document.querySelector('.game-footer')
   if (footer) {
-    footer.style.display = 'flex';
-    footer.style.zIndex = '10';
-    
+    footer.style.display = 'flex'
+    footer.style.zIndex = '10'
+
     // 特别针对Edge浏览器的额外处理
-    if (navigator.userAgent.indexOf('Edge') !== -1 || navigator.userAgent.indexOf('Edg') !== -1) {
-      footer.style.position = 'fixed';
-      footer.style.bottom = '10px';
-      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-      footer.style.paddingTop = '5px';
-      footer.style.paddingBottom = '5px';
+    if (
+      navigator.userAgent.indexOf('Edge') !== -1 ||
+      navigator.userAgent.indexOf('Edg') !== -1
+    ) {
+      footer.style.position = 'fixed'
+      footer.style.bottom = '10px'
+      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
+      footer.style.paddingTop = '5px'
+      footer.style.paddingBottom = '5px'
     }
   }
-  
+
   // 处理游戏板的居中问题，特别是在移动版Edge
-  ensureGameBoardCentering();
+  ensureGameBoardCentering()
 }
 
 // 确保游戏板在所有浏览器中居中
 function ensureGameBoardCentering() {
   // 获取游戏板元素
-  const gameBoard = document.querySelector('.game-board');
-  if (!gameBoard) return;
-  
+  const gameBoard = document.querySelector('.game-board')
+  if (!gameBoard) return
+
   // 判断浏览器类型
-  const isEdge = navigator.userAgent.indexOf('Edge') !== -1 || navigator.userAgent.indexOf('Edg') !== -1;
-  const isEdgeMobile = isEdge && (navigator.userAgent.indexOf('Mobile') !== -1 || navigator.userAgent.indexOf('Android') !== -1 || navigator.userAgent.indexOf('iPhone') !== -1);
-  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1;
-  
+  const isEdge =
+    navigator.userAgent.indexOf('Edge') !== -1 ||
+    navigator.userAgent.indexOf('Edg') !== -1
+  const isEdgeMobile =
+    isEdge &&
+    (navigator.userAgent.indexOf('Mobile') !== -1 ||
+      navigator.userAgent.indexOf('Android') !== -1 ||
+      navigator.userAgent.indexOf('iPhone') !== -1)
+  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
+
   // 修改布局结构，确保元素可见性和正确定位
-  const container = document.querySelector('.game-container');
-  const header = document.querySelector('.game-header');
-  const footer = document.querySelector('.game-footer');
-  
+  const container = document.querySelector('.game-container')
+  const header = document.querySelector('.game-header')
+  const footer = document.querySelector('.game-footer')
+
   // 应用通用居中样式
-  gameBoard.style.position = 'relative';
-  gameBoard.style.margin = 'auto';
-  
+  gameBoard.style.position = 'relative'
+  gameBoard.style.margin = 'auto'
+
   // 确保按钮绝对可见
-  const allButtons = document.querySelectorAll('.game-btn');
-  allButtons.forEach(button => {
-    button.style.display = 'inline-block';
-    button.style.visibility = 'visible';
-    button.style.opacity = '1';
-    button.style.zIndex = '1000';
-  });
-  
+  const allButtons = document.querySelectorAll('.game-btn')
+  allButtons.forEach((button) => {
+    button.style.display = 'inline-block'
+    button.style.visibility = 'visible'
+    button.style.opacity = '1'
+    button.style.zIndex = '1000'
+  })
+
   if (isEdgeMobile) {
-    console.log('Edge Mobile detected, applying special layout');
-    
+    console.log('Edge Mobile detected, applying special layout')
+
     // 针对手机版Edge的特殊处理
     // 确保游戏容器占满全屏并提供良好的间距
     if (container) {
-      container.style.position = 'relative';
-      container.style.height = '100vh';
-      container.style.display = 'flex';
-      container.style.flexDirection = 'column';
-      container.style.justifyContent = 'space-between';
-      container.style.padding = '20px 10px 80px 10px';
+      container.style.position = 'relative'
+      container.style.height = '100vh'
+      container.style.display = 'flex'
+      container.style.flexDirection = 'column'
+      container.style.justifyContent = 'space-between'
+      container.style.padding = '20px 10px 80px 10px'
     }
-    
+
     // 确保游戏板居中
-    gameBoard.style.position = 'relative';
-    gameBoard.style.maxWidth = 'calc(100vw - 30px)';
-    gameBoard.style.maxHeight = 'calc(100vh - 240px)';
-    gameBoard.style.flexGrow = '0';
-    gameBoard.style.marginTop = '10px';
-    gameBoard.style.marginBottom = '10px';
-    
+    gameBoard.style.position = 'relative'
+    gameBoard.style.maxWidth = 'calc(100vw - 30px)'
+    gameBoard.style.maxHeight = 'calc(100vh - 240px)'
+    gameBoard.style.flexGrow = '0'
+    gameBoard.style.marginTop = '10px'
+    gameBoard.style.marginBottom = '10px'
+
     // 确保底部按钮区域可见
     if (footer) {
-      footer.style.position = 'relative';
-      footer.style.bottom = '0';
-      footer.style.width = '100%';
-      footer.style.padding = '10px 5px';
-      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-      footer.style.marginTop = '20px';
-      footer.style.zIndex = '1000';
-      footer.style.borderRadius = '15px';
-      footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)';
+      footer.style.position = 'relative'
+      footer.style.bottom = '0'
+      footer.style.width = '100%'
+      footer.style.padding = '10px 5px'
+      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
+      footer.style.marginTop = '20px'
+      footer.style.zIndex = '1000'
+      footer.style.borderRadius = '15px'
+      footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)'
     }
-    
+
     // 确保顶部信息栏可见
     if (header) {
-      header.style.position = 'relative';
-      header.style.top = '0';
-      header.style.width = '100%';
-      header.style.zIndex = '999';
-      header.style.marginBottom = '10px';
+      header.style.position = 'relative'
+      header.style.top = '0'
+      header.style.width = '100%'
+      header.style.zIndex = '999'
+      header.style.marginBottom = '10px'
     }
   } else if (isFirefox && window.innerWidth < 768) {
     // 针对手机版Firefox的特殊处理
-    gameBoard.style.marginTop = '60px';
-    gameBoard.style.marginBottom = '60px';
-    
+    gameBoard.style.marginTop = '60px'
+    gameBoard.style.marginBottom = '60px'
+
     if (footer) {
-      footer.style.position = 'relative';
-      footer.style.marginTop = '15px';
+      footer.style.position = 'relative'
+      footer.style.marginTop = '15px'
     }
-    
+
     if (header) {
-      header.style.position = 'relative';
-      header.style.marginBottom = '15px';
+      header.style.position = 'relative'
+      header.style.marginBottom = '15px'
     }
   } else {
     // 其他浏览器的通用居中处理
-    gameBoard.style.margin = '20px auto';
-    
+    gameBoard.style.margin = '20px auto'
+
     if (container) {
-      container.style.justifyContent = 'space-between';
-      container.style.padding = '20px 10px';
+      container.style.justifyContent = 'space-between'
+      container.style.padding = '20px 10px'
     }
-    
+
     if (footer) {
-      footer.style.position = 'relative';
-      footer.style.marginTop = '20px';
+      footer.style.position = 'relative'
+      footer.style.marginTop = '20px'
     }
-    
+
     if (header) {
-      header.style.position = 'relative';
-      header.style.marginBottom = '20px';
+      header.style.position = 'relative'
+      header.style.marginBottom = '20px'
     }
   }
-  
+
   // 添加窗口大小变化监听器
-  window.addEventListener('resize', function() {
+  window.addEventListener('resize', function () {
     setTimeout(() => {
       // 重新应用布局逻辑，确保窗口改变大小后仍然保持正确的布局
-      ensureGameBoardCentering();
-    }, 100);
-  });
+      ensureGameBoardCentering()
+    }, 100)
+  })
 }
