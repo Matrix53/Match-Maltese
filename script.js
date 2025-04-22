@@ -84,7 +84,7 @@ function initGame() {
 // 创建卡片
 function createCards() {
   // 随机选择8种图片
-  const availableCards = Array.from({ length: 73 }, (_, i) => i)
+  const availableCards = Array.from({ length: 145 }, (_, i) => i)
   const selectedCards = []
 
   while (selectedCards.length < 8) {
