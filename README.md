@@ -49,8 +49,8 @@ Match-Maltese/
 ├── LICENSE           # MIT许可证
 ├── images/           # 游戏图片资源
 │   ├── cards/        # 卡片图片
-│   ├── paw.min.svg   # 爪印图标
-│   ├── love.min.svg  # 爱心图标
+│   ├── hidden/       # 彩蛋图片
+│   ├── *.svg         # SVG资源
 │   └── win.jpeg      # 胜利图片
 └── sounds/           # 游戏音效
     ├── background.mp3  # 背景音乐

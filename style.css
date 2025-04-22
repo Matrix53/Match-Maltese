@@ -37,10 +37,21 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255, 237, 213, 0.3) 10px, transparent 10px),
-    radial-gradient(circle at 75% 75%, rgba(255, 237, 213, 0.3) 15px, transparent 15px),
-    radial-gradient(circle at 50% 50%, rgba(255, 237, 213, 0.3) 20px, transparent 20px);
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(255, 237, 213, 0.3) 10px,
+      transparent 10px
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(255, 237, 213, 0.3) 15px,
+      transparent 15px
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 237, 213, 0.3) 20px,
+      transparent 20px
+    );
   background-size: 100px 100px;
   animation: backgroundMove 20s linear infinite;
 }
@@ -87,9 +98,8 @@ body {
   padding: 10px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
-              inset 0 0 0 3px #fff,
-              inset 0 0 0 6px #ffbb7b;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #fff,
+    inset 0 0 0 6px #ffbb7b;
 }
 
 .status-item {
@@ -103,18 +113,41 @@ body {
   margin-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 添加状态图标样式 */
+.status-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  display: inline-block;
+  fill: #b3a38f; /* 将默认填充颜色设置得更浅一些 */
+  transform: translateY(-1px); /* 微调垂直位置使其更加协调 */
+  filter: drop-shadow(1px 1px 0 #fff); /* 添加轻微阴影效果增强可见性 */
+}
+
+.score-icon {
+  fill: #b3a38f; /* 更浅的颜色 */
+  width: 1rem; /* 调整得分图标尺寸，使其略小 */
+  height: 1rem;
+}
+
+.time-icon {
+  fill: #b3a38f; /* 更浅的颜色 */
+  width: 1rem; /* 调整时间图标尺寸，使其略小 */
+  height: 1rem;
 }
 
 .status-value {
   font-size: 2rem;
   font-weight: bold;
   color: #ff9c52;
-  text-shadow: 
-    2px 2px 0 #fff,
-    -1px -1px 0 #fff,
-    1px -1px 0 #fff,
-    -1px 1px 0 #fff,
-    0 2px 5px rgba(0, 0, 0, 0.2);
+  text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 0 2px 5px rgba(0, 0, 0, 0.2);
   transform: perspective(500px) rotateX(10deg);
 }
 
@@ -128,11 +161,11 @@ body {
   grid-template-rows: repeat(4, 1fr);
   grid-gap: min(2vmin, 10px);
   padding: min(2vmin, 10px);
-  flex: 0 1 auto; 
+  flex: 0 1 auto;
   position: relative;
   border-radius: 15px;
   z-index: 5;
-  background-color: rgba(255, 255, 255, 0.05); 
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* 游戏卡片 */
@@ -159,7 +192,8 @@ body {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -186,20 +220,31 @@ body {
 
 .card-back {
   background-color: #ffbb7b;
-  background-image: 
-    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%),
-    linear-gradient(45deg, #ffbb7b 25%, transparent 25%, transparent 75%, #ffbb7b 75%);
+  background-image: linear-gradient(
+      45deg,
+      #ffbb7b 25%,
+      transparent 25%,
+      transparent 75%,
+      #ffbb7b 75%
+    ),
+    linear-gradient(
+      45deg,
+      #ffbb7b 25%,
+      transparent 25%,
+      transparent 75%,
+      #ffbb7b 75%
+    );
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
   border: 5px solid white;
 }
 
 .card-back::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 50%;
   height: 50%;
-  background-image: url(images/paw.min.svg);
+  background-image: url(images/paw.svg);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -212,7 +257,8 @@ body {
 }
 
 @keyframes matchedAnimation {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotateY(180deg) scale(1);
   }
   50% {
@@ -277,7 +323,7 @@ body {
   display: inline-block !important; /* 强制显示 */
   visibility: visible !important; /* 修正为正确的 important 关键字 */
   opacity: 1 !important; /* 确保不透明 */
-  padding: 10px 15px; 
+  padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
   font-weight: bold;
@@ -286,17 +332,17 @@ body {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  box-shadow: 
-    0 4px 0 #d87d35,
-    0 5px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 0 #d87d35, 0 5px 5px rgba(0, 0, 0, 0.2);
   transition: all 0.2s;
   position: relative;
   overflow: hidden;
-  margin: 5px; 
+  margin: 5px;
   min-width: 90px; /* 确保按钮有最小宽度 */
   -webkit-appearance: none; /* 修复在某些移动浏览器中的显示问题 */
   appearance: none;
-  -webkit-transform: translateZ(0); /* 启用硬件加速以避免某些移动浏览器中的渲染问题 */
+  -webkit-transform: translateZ(
+    0
+  ); /* 启用硬件加速以避免某些移动浏览器中的渲染问题 */
   transform: translateZ(0);
   z-index: 100; /* 提高按钮的层级，确保它们显示在最上层 */
 }
@@ -308,7 +354,12 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   transition: 0.5s;
 }
 
@@ -323,9 +374,7 @@ body {
 
 .game-btn.active {
   background: #4caf50;
-  box-shadow: 
-    0 4px 0 #388e3c,
-    0 5px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 0 #388e3c, 0 5px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* 模态框样式 */
@@ -516,7 +565,7 @@ body {
   height: 200px;
   margin: 0 auto 20px;
   opacity: 0.2;
-  background-image: url(images/love.min.svg);
+  background-image: url(images/love.svg);
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -584,11 +633,17 @@ body {
   .status-label {
     font-size: 0.9rem;
   }
-  
+
+  .status-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.2rem;
+  }
+
   .status-value {
     font-size: 1.7rem;
   }
-  
+
   .game-btn {
     padding: 8px 12px; /* 更小的按钮内边距 */
     font-size: 0.85rem; /* 更小的字体大小 */
@@ -596,23 +651,23 @@ body {
     display: inline-block !important; /* 再次强制显示 */
     visibility: visible !important; /* 再次强制可见 */
   }
-  
+
   .modal-content {
     width: 95%;
   }
-  
+
   .game-board {
     width: min(95vw, min(95vh - 150px, 500px));
     height: min(95vw, min(95vh - 150px, 500px));
     grid-gap: 5px;
     padding: 5px;
   }
-  
+
   .game-container {
     padding: 5px; /* 更小的内边距 */
     justify-content: flex-start; /* 从顶部开始 */
   }
-  
+
   .game-header {
     padding: 5px; /* 更小的内边距 */
   }
@@ -634,11 +689,11 @@ body {
     width: min(90vw, min(90vh - 120px, 500px));
     height: min(90vw, min(90vh - 120px, 500px));
   }
-  
+
   .game-footer {
     padding: 5px 0;
   }
-  
+
   .game-btn {
     padding: 6px 10px;
     font-size: 0.8rem;
@@ -653,25 +708,25 @@ body {
     height: 100vh;
     align-content: center;
   }
-  
+
   .game-header {
     width: 30%;
     order: 1;
   }
-  
+
   .game-board {
     width: min(70vh, min(70vw - 200px, 500px));
     height: min(70vh, min(70vw - 200px, 500px));
     order: 2;
   }
-  
+
   .game-footer {
     width: 30%;
     flex-direction: column;
     order: 3;
     align-items: center;
   }
-  
+
   .game-btn {
     margin: 5px 0;
   }
@@ -703,14 +758,14 @@ body {
     background-color: rgba(255, 255, 255, 0.5);
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   .game-btn {
     transform: none !important;
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
   }
-  
+
   /* 针对Edge移动版的游戏板居中修复 */
   .game-board {
     margin: 0 auto !important;
@@ -720,14 +775,14 @@ body {
     transform: translate(-50%, -50%) !important;
     max-height: calc(100vh - 300px) !important; /* 确保留出足够空间给按钮 */
   }
-  
+
   .game-container {
     justify-content: center !important;
     align-items: center !important;
     padding-top: 60px !important; /* 顶部增加空间 */
     padding-bottom: 80px !important; /* 底部增加空间给按钮 */
   }
-  
+
   /* 确保顶部信息条可见 */
   .game-header {
     position: absolute !important;
@@ -736,5 +791,24 @@ body {
     right: 0 !important;
     width: 100% !important;
     z-index: 100 !important;
+  }
+}
+
+/* 修复SVG在Firefox中的兼容性问题 */
+@-moz-document url-prefix() {
+  .status-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    position: relative;
+    top: -0.05rem;
+  }
+}
+
+/* 修复SVG在Edge中的兼容性问题 */
+@supports (-ms-ime-align: auto) {
+  .status-icon {
+    position: relative;
+    top: 0.1rem;
+    margin-left: 0.2rem;
   }
 }
