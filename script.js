@@ -336,9 +336,20 @@ function showLeaderboard() {
     `
 
     leaderboard.forEach((entry, index) => {
+      // 为前三名显示奖牌图标
+      let rankDisplay = `${index + 1}`
+      
+      if (index === 0) {
+        rankDisplay = `<img src="images/gold.svg" alt="金牌" class="rank-medal" />`
+      } else if (index === 1) {
+        rankDisplay = `<img src="images/silver.svg" alt="银牌" class="rank-medal" />`
+      } else if (index === 2) {
+        rankDisplay = `<img src="images/bronze.svg" alt="铜牌" class="rank-medal" />`
+      }
+
       rankHTML += `
         <div class="rank-item ${index < 3 ? 'top-rank' : ''}">
-          <span class="rank-col">${index + 1}</span>
+          <span class="rank-col">${rankDisplay}</span>
           <span class="rank-col">${entry.name}</span>
           <span class="rank-col">${entry.score}</span>
           <span class="rank-col">${entry.time}秒</span>
@@ -347,9 +358,55 @@ function showLeaderboard() {
     })
 
     rankList.innerHTML = rankHTML
+
+    // 确保奖牌图标大小适当
+    ensureMedalSizes()
   }
 
   rankModal.style.display = 'flex'
+}
+
+// 确保奖牌图标大小适当
+function ensureMedalSizes() {
+  const medals = document.querySelectorAll('.rank-medal')
+  medals.forEach(medal => {
+    medal.style.width = '20px'
+    medal.style.height = '20px'
+    medal.style.verticalAlign = 'middle'
+    medal.style.marginTop = '-3px' // 微调垂直位置
+    
+    // 添加一些动画效果
+    medal.style.animation = 'medalShine 2s infinite alternate'
+    
+    // 根据设备尺寸调整图标大小
+    if (window.innerWidth <= 375) {
+      medal.style.width = '18px'
+      medal.style.height = '18px'
+    } else if (window.innerWidth >= 768) {
+      medal.style.width = '24px'
+      medal.style.height = '24px'
+    }
+  })
+  
+  // 为顶部排行榜添加反应式风格
+  const topRanks = document.querySelectorAll('.top-rank')
+  topRanks.forEach((rank, index) => {
+    // 根据名次设置不同的背景色深度
+    const opacity = 0.3 - (index * 0.05)
+    rank.style.backgroundColor = `rgba(255, 187, 123, ${opacity})`
+    rank.style.transition = 'all 0.3s ease'
+    
+    // 添加鼠标悬停效果
+    rank.addEventListener('mouseenter', function() {
+      this.style.transform = 'translateX(5px)'
+      this.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
+    })
+    
+    rank.addEventListener('mouseleave', function() {
+      this.style.transform = 'translateX(0)'
+      this.style.boxShadow = 'none'
+    })
+  })
 }
 
 // 分享排行榜
