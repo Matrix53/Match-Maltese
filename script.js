@@ -89,7 +89,7 @@ function createCards() {
 
   // 随机排序
   shuffle(cardPairs)
-  
+
   // 检测是否为Firefox浏览器
   const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
 
@@ -108,7 +108,7 @@ function createCards() {
     // Firefox fix for backface visibility
     cardFront.style.backfaceVisibility = 'hidden'
     cardFront.style.webkitBackfaceVisibility = 'hidden'
-    
+
     // Firefox专用修复：确保背面在翻转时完全隐藏
     if (isFirefox) {
       cardFront.style.zIndex = '2' // 确保正面在上层
@@ -123,13 +123,13 @@ function createCards() {
     // Firefox fix for backface visibility
     cardBack.style.backfaceVisibility = 'hidden'
     cardBack.style.webkitBackfaceVisibility = 'hidden'
-    
+
     // Firefox专用修复：确保背面在翻转时完全隐藏
     if (isFirefox) {
       cardBack.style.zIndex = '1' // 确保背面在下层
-      
+
       // 为Firefox增加翻转时的隐藏效果
-      card.addEventListener('transitionstart', function(e) {
+      card.addEventListener('transitionstart', function (e) {
         if (this.classList.contains('flipped')) {
           setTimeout(() => {
             cardBack.style.opacity = '0'
@@ -301,9 +301,9 @@ function saveScore() {
     return a.time - b.time // 分数相同时按时间升序
   })
 
-  // 只保留前10名
-  if (leaderboard.length > 10) {
-    leaderboard = leaderboard.slice(0, 10)
+  // 只保留前5名
+  if (leaderboard.length > 5) {
+    leaderboard = leaderboard.slice(0, 5)
   }
 
   // 保存到本地存储
@@ -338,7 +338,7 @@ function showLeaderboard() {
     leaderboard.forEach((entry, index) => {
       // 为前三名显示奖牌图标
       let rankDisplay = `${index + 1}`
-      
+
       if (index === 0) {
         rankDisplay = `<img src="images/gold.svg" alt="金牌" class="rank-medal" />`
       } else if (index === 1) {
@@ -369,15 +369,15 @@ function showLeaderboard() {
 // 确保奖牌图标大小适当
 function ensureMedalSizes() {
   const medals = document.querySelectorAll('.rank-medal')
-  medals.forEach(medal => {
+  medals.forEach((medal) => {
     medal.style.width = '20px'
     medal.style.height = '20px'
     medal.style.verticalAlign = 'middle'
     medal.style.marginTop = '-3px' // 微调垂直位置
-    
+
     // 添加一些动画效果
     medal.style.animation = 'medalShine 2s infinite alternate'
-    
+
     // 根据设备尺寸调整图标大小
     if (window.innerWidth <= 375) {
       medal.style.width = '18px'
@@ -387,22 +387,22 @@ function ensureMedalSizes() {
       medal.style.height = '24px'
     }
   })
-  
+
   // 为顶部排行榜添加反应式风格
   const topRanks = document.querySelectorAll('.top-rank')
   topRanks.forEach((rank, index) => {
     // 根据名次设置不同的背景色深度
-    const opacity = 0.3 - (index * 0.05)
+    const opacity = 0.3 - index * 0.05
     rank.style.backgroundColor = `rgba(255, 187, 123, ${opacity})`
     rank.style.transition = 'all 0.3s ease'
-    
+
     // 添加鼠标悬停效果
-    rank.addEventListener('mouseenter', function() {
+    rank.addEventListener('mouseenter', function () {
       this.style.transform = 'translateX(5px)'
       this.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
     })
-    
-    rank.addEventListener('mouseleave', function() {
+
+    rank.addEventListener('mouseleave', function () {
       this.style.transform = 'translateX(0)'
       this.style.boxShadow = 'none'
     })
@@ -504,7 +504,7 @@ function toggleMusic() {
 document.addEventListener('DOMContentLoaded', () => {
   // 确保按钮在所有平台上可见
   ensureButtonVisibility()
-  
+
   // 确保宽屏上的布局一致性
   ensureWideScreenLayout()
 
@@ -722,16 +722,16 @@ function ensureGameBoardCentering() {
 
 // 确保在宽屏上的布局一致性
 function ensureWideScreenLayout() {
-  if (!gameBoard || !gameHeader || !gameFooter) return;
-  
-  const gameBoardWidth = gameBoard.offsetWidth;
-  
+  if (!gameBoard || !gameHeader || !gameFooter) return
+
+  const gameBoardWidth = gameBoard.offsetWidth
+
   // 设置顶部和底部区域宽度与游戏区域相同
   if (gameHeader) {
-    gameHeader.style.maxWidth = `${gameBoardWidth}px`;
+    gameHeader.style.maxWidth = `${gameBoardWidth}px`
   }
-  
+
   if (gameFooter) {
-    gameFooter.style.maxWidth = `${gameBoardWidth}px`;
+    gameFooter.style.maxWidth = `${gameBoardWidth}px`
   }
 }
