@@ -87,6 +87,9 @@ function createCards() {
 
   // 随机排序
   shuffle(cardPairs)
+  
+  // 检测是否为Firefox浏览器
+  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
 
   // 创建卡片元素
   cardPairs.forEach((cardId, index) => {
@@ -103,6 +106,11 @@ function createCards() {
     // Firefox fix for backface visibility
     cardFront.style.backfaceVisibility = 'hidden'
     cardFront.style.webkitBackfaceVisibility = 'hidden'
+    
+    // Firefox专用修复：确保背面在翻转时完全隐藏
+    if (isFirefox) {
+      cardFront.style.zIndex = '2' // 确保正面在上层
+    }
 
     const cardImage = document.createElement('img')
     cardImage.src = `images/cards/card${cardId}.jpeg`
@@ -113,6 +121,22 @@ function createCards() {
     // Firefox fix for backface visibility
     cardBack.style.backfaceVisibility = 'hidden'
     cardBack.style.webkitBackfaceVisibility = 'hidden'
+    
+    // Firefox专用修复：确保背面在翻转时完全隐藏
+    if (isFirefox) {
+      cardBack.style.zIndex = '1' // 确保背面在下层
+      
+      // 为Firefox增加翻转时的隐藏效果
+      card.addEventListener('transitionstart', function(e) {
+        if (this.classList.contains('flipped')) {
+          setTimeout(() => {
+            cardBack.style.opacity = '0'
+          }, 150) // 在翻转过程中稍后隐藏背面
+        } else {
+          cardBack.style.opacity = '1'
+        }
+      })
+    }
 
     cardFront.appendChild(cardImage)
     cardInner.appendChild(cardFront)
