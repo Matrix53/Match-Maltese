@@ -49,7 +49,14 @@
             <div id="time" class="status-value">0</div>
           </div>
         </div>
+        <!-- 新增连击显示栏 -->
+        <div id="combo-display" class="combo-display" style="display: none;">
+          <div class="combo-text">连击 <span id="combo-count">0</span></div>
+        </div>
       </div>
+
+      <!-- 连击特效容器 -->
+      <div id="combo-effect-container" class="combo-effect-container"></div>
 
       <!-- 游戏区域 -->
       <div class="game-board" style="margin: 20px auto; position: relative; border-radius: 15px;"></div>
@@ -73,6 +80,12 @@
     </audio>
     <audio id="win-sound" preload="auto">
       <source src="sounds/win.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="combo-sound" preload="auto">
+      <source src="sounds/combo.mp3" type="audio/mp3" />
+    </audio>
+    <audio id="super-combo-sound" preload="auto">
+      <source src="sounds/super_combo.mp3" type="audio/mp3" />
     </audio>
 
     <!-- 排行榜模态框 -->

@@ -628,6 +628,281 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 156, 82, 0.3);
 }
 
+/* 新增连击显示样式 */
+.combo-display {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #ff9c52, #ff7730);
+  border-radius: 15px;
+  padding: 8px 15px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), inset 0 0 0 2px #fff;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+  opacity: 0;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.combo-display.active {
+  opacity: 1;
+  transform: translateY(0);
+  animation: comboReveal 0.5s ease-out;
+}
+
+.combo-display.pulse {
+  animation: comboPulse 0.6s ease-out;
+}
+
+.combo-display.super {
+  background: linear-gradient(135deg, #ff5252, #ff1f1f);
+  box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4), inset 0 0 0 2px #fff, 0 0 20px rgba(255, 82, 82, 0.6);
+}
+
+@keyframes comboReveal {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes comboPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.combo-text {
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  position: relative;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.combo-text span {
+  font-size: 1.4rem;
+  display: inline-block;
+  margin-left: 5px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* 连击特效 */
+.combo-effect {
+  position: absolute;
+  pointer-events: none;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  z-index: 100;
+  white-space: nowrap;
+  animation: comboEffect 1.2s forwards ease-out;
+}
+
+@keyframes comboEffect {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-50%, -70%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -100%) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* 超级连击特效 */
+.super-combo-effect {
+  animation: superComboEffect 1.5s forwards cubic-bezier(0.11, 0.65, 0.33, 1);
+  color: #ffdd00;
+  text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 0 0 20px rgba(255, 221, 0, 0.5), 0 0 30px rgba(255, 151, 0, 0.3);
+  font-size: 2.5rem;
+}
+
+@keyframes superComboEffect {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(-5deg);
+    opacity: 0;
+  }
+  10% {
+    transform: translate(-50%, -50%) scale(0.7) rotate(5deg);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translate(-50%, -60%) scale(1.3) rotate(-3deg);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -100%) scale(1) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -150%) scale(0.7) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+/* 连击特效容器 */
+.combo-effect-container {
+  position: relative;
+  width: 100%;
+  max-width: min(85vw, min(85vh - 200px, 500px));
+  height: 60px;
+  margin: 0 auto;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 600px;
+}
+
+/* 连击特效（现在放在专门的容器中） */
+.combo-effect-display {
+  position: absolute;
+  pointer-events: none;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  backface-visibility: hidden;
+  text-align: center;
+  transform-origin: center center;
+  width: 100%;
+  animation: comboEffectDisplay 1.2s forwards ease-out;
+  z-index: 100;
+}
+
+@keyframes comboEffectDisplay {
+  0% {
+    transform: scale(0.5) translateY(20px);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  20% {
+    transform: scale(1.3) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  50% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(0.8) translateY(-30px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+/* 超级连击特效（现在放在专门的容器中） */
+.super-combo-effect-display {
+  font-size: 3rem;
+  color: #ffdd00;
+  text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 
+               0 0 20px rgba(255, 221, 0, 0.5), 
+               0 0 30px rgba(255, 151, 0, 0.3),
+               0 0 2px #ff5252;
+  animation: superComboEffectDisplay 1.5s forwards cubic-bezier(0.11, 0.65, 0.33, 1);
+}
+
+@keyframes superComboEffectDisplay {
+  0% {
+    transform: scale(0.5) translateY(20px) rotate(-5deg);
+    opacity: 0;
+    filter: blur(5px);
+  }
+  20% {
+    transform: scale(1.5) translateY(0) rotate(3deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  40% {
+    transform: scale(1.2) translateY(0) rotate(-2deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  80% {
+    transform: scale(1) translateY(-20px) rotate(1deg);
+    opacity: 0.8;
+    filter: blur(0);
+  }
+  100% {
+    transform: scale(0.7) translateY(-50px) rotate(0);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+/* 连击效果冲击波 */
+.combo-shockwave {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 156, 82, 0.1);
+  box-shadow: 0 0 30px rgba(255, 156, 82, 0.3), inset 0 0 15px rgba(255, 156, 82, 0.2);
+  animation: shockwaveEffect 0.8s ease-out forwards;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.super-combo-shockwave {
+  background-color: rgba(255, 82, 82, 0.2);
+  box-shadow: 0 0 40px rgba(255, 82, 82, 0.4), inset 0 0 20px rgba(255, 82, 82, 0.3);
+}
+
+@keyframes shockwaveEffect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.8;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* 震动动画效果 */
+@keyframes screenShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+.shake {
+  animation: screenShake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
 /* 响应式调整 */
 @media (max-width: 375px) {
   .status-label {
@@ -680,6 +955,43 @@ body {
   .rank-medal {
     width: 18px;
     height: 18px;
+  }
+  
+  .combo-text {
+    font-size: 1rem;
+  }
+  
+  .combo-text span {
+    font-size: 1.2rem;
+  }
+  
+  .combo-display {
+    padding: 5px 10px;
+  }
+  
+  .combo-effect-container {
+    height: 50px;
+  }
+  
+  .combo-effect-display {
+    font-size: 2rem;
+  }
+  
+  .super-combo-effect-display {
+    font-size: 2.2rem;
+  }
+  
+  @keyframes shockwaveEffect {
+    0% {
+      width: 0;
+      height: 0;
+      opacity: 0.8;
+    }
+    100% {
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+    }
   }
 }
 

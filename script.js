@@ -22,6 +22,8 @@ const gameFooter = document.querySelector('.game-footer')
 // 音效元素
 const scoreSound = document.getElementById('score-sound')
 const winSound = document.getElementById('win-sound')
+const comboSound = document.getElementById('combo-sound')
+const superComboSound = document.getElementById('super-combo-sound')
 
 // 游戏状态
 let cards = []
@@ -34,11 +36,16 @@ let secondCard = null
 let lockBoard = false
 let matchedPairs = 0
 let currentPotentialScore = 200 // 每对卡片的最高得分
+let comboCount = 0 // 连击计数
+let comboTimer = null // 连击计时器
+let lastMatchTime = 0 // 上次匹配时间
 
 // 初始化游戏
 function initGame() {
   clearInterval(gameTimer)
   clearInterval(scoreTimer)
+  if (comboTimer) clearTimeout(comboTimer)
+  
   cards = []
   score = 0
   timeElapsed = 0
@@ -47,6 +54,8 @@ function initGame() {
   firstCard = null
   secondCard = null
   currentPotentialScore = 200
+  comboCount = 0 // 重置连击计数
+  lastMatchTime = 0 // 重置上次匹配时间
 
   // 更新显示
   scoreElement.textContent = score
@@ -193,48 +202,223 @@ function checkForMatch() {
 
 // 添加得分
 function addScore() {
+  // 获取连击显示元素
+  const comboDisplay = document.getElementById('combo-display');
+  const comboCountElement = document.getElementById('combo-count');
+  
+  // 计算当前时间与上次匹配时间的差值（秒）
+  const now = Date.now();
+  const timeDiff = (now - lastMatchTime) / 1000;
+  
+  // 如果是首次匹配或连击计时器已经超过限制，重置连击
+  if (lastMatchTime === 0 || timeDiff > 4) {
+    comboCount = 0;
+  }
+  
+  // 更新上次匹配时间
+  lastMatchTime = now;
+  
+  // 增加连击计数
+  comboCount++;
+  
+  // 连击奖励系数
+  let comboMultiplier = 1;
+  
+  // 根据连击数更新显示和奖励系数
+  if (comboCount > 1) {
+    // 显示连击计数
+    comboCountElement.textContent = comboCount;
+    
+    // 计算奖励系数
+    if (comboCount >= 2 && comboCount < 4) {
+      // 普通连击：2x 和 3x
+      comboMultiplier = 1.5;
+      showComboEffect(firstCard, secondCard, `${comboCount}连击!`);
+      
+      // 播放连击音效
+      comboSound.currentTime = 0;
+      comboSound.play();
+      
+      // 显示连击条
+      comboDisplay.classList.add('active');
+      comboDisplay.classList.add('pulse');
+      comboDisplay.classList.remove('super');
+      
+      // 连击条脉冲效果
+      setTimeout(() => {
+        comboDisplay.classList.remove('pulse');
+      }, 600);
+    } else if (comboCount >= 4) {
+      // 超级连击：4连击以上
+      comboMultiplier = 2 + (comboCount - 4) * 0.5; // 递增奖励
+      comboMultiplier = Math.min(comboMultiplier, 5); // 限制最大倍率为5倍
+      
+      showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`);
+      
+      // 播放超级连击音效
+      superComboSound.currentTime = 0;
+      superComboSound.play();
+      
+      // 更新连击显示样式
+      comboDisplay.classList.add('active');
+      comboDisplay.classList.add('pulse');
+      comboDisplay.classList.add('super');
+      
+      setTimeout(() => {
+        comboDisplay.classList.remove('pulse');
+      }, 600);
+    }
+    
+    // 重设连击超时计时器
+    if (comboTimer) clearTimeout(comboTimer);
+    comboTimer = setTimeout(() => {
+      // 连击超时
+      comboDisplay.classList.remove('active');
+      comboDisplay.classList.remove('super');
+      comboCount = 0;
+    }, 4000); // 4秒后重置连击
+  } else {
+    // 首次匹配，播放普通得分音效
+    scoreSound.play();
+  }
+  
+  // 计算本次得分（基础分数 * 连击系数）
+  const pointsEarned = Math.round(currentPotentialScore * comboMultiplier);
+  
   // 添加得分
-  score += currentPotentialScore
-  scoreElement.textContent = score
-
-  // 播放得分音效
-  scoreSound.play()
+  score += pointsEarned;
+  scoreElement.textContent = score;
 
   // 显示加分动画
-  const scorePopup = document.createElement('div')
-  scorePopup.classList.add('score-popup')
-  scorePopup.textContent = `+${currentPotentialScore}`
+  const scorePopup = document.createElement('div');
+  scorePopup.classList.add('score-popup');
+  
+  // 如果是连击，显示倍率
+  if (comboCount > 1) {
+    scorePopup.textContent = `+${pointsEarned} (x${comboMultiplier.toFixed(1)})`;
+    // 连击得分颜色特殊处理
+    if (comboCount >= 4) {
+      scorePopup.style.color = '#ff5252';
+      scorePopup.style.fontSize = '1.8rem';
+      scorePopup.style.textShadow = '2px 2px 0 white, 0 0 10px rgba(255, 82, 82, 0.7)';
+    } else {
+      scorePopup.style.color = '#ff7730';
+    }
+  } else {
+    scorePopup.textContent = `+${pointsEarned}`;
+  }
 
   // 计算加分动画位置（两张卡片中间）
-  const firstRect = firstCard.getBoundingClientRect()
-  const secondRect = secondCard.getBoundingClientRect()
-  const x = (firstRect.left + secondRect.left) / 2 + firstRect.width / 2
-  const y = (firstRect.top + secondRect.top) / 2 + firstRect.height / 2
+  const firstRect = firstCard.getBoundingClientRect();
+  const secondRect = secondCard.getBoundingClientRect();
+  const x = (firstRect.left + secondRect.left) / 2 + firstRect.width / 2;
+  const y = (firstRect.top + secondRect.top) / 2 + firstRect.height / 2;
 
-  scorePopup.style.left = `${x - gameBoard.getBoundingClientRect().left}px`
-  scorePopup.style.top = `${y - gameBoard.getBoundingClientRect().top}px`
+  scorePopup.style.left = `${x - gameBoard.getBoundingClientRect().left}px`;
+  scorePopup.style.top = `${y - gameBoard.getBoundingClientRect().top}px`;
 
-  gameBoard.appendChild(scorePopup)
+  gameBoard.appendChild(scorePopup);
 
   // 卡片匹配动画
-  firstCard.classList.add('matched')
-  secondCard.classList.add('matched')
+  firstCard.classList.add('matched');
+  secondCard.classList.add('matched');
 
   // 清除动画元素
   setTimeout(() => {
-    gameBoard.removeChild(scorePopup)
-  }, 1500)
+    gameBoard.removeChild(scorePopup);
+  }, 1500);
 
   // 重置当前分数计算器
-  currentPotentialScore = 200
+  currentPotentialScore = 200;
 
   // 检查游戏是否结束
-  matchedPairs++
+  matchedPairs++;
   if (matchedPairs === 8) {
     setTimeout(() => {
-      endGame()
-    }, 1000)
+      endGame();
+    }, 1000);
   }
+}
+
+// 显示连击特效
+function showComboEffect(card1, card2, text) {
+  // 获取连击特效容器
+  const comboEffectContainer = document.getElementById('combo-effect-container');
+  
+  // 创建连击特效元素
+  const effect = document.createElement('div');
+  effect.classList.add('combo-effect-display');
+  effect.textContent = text;
+  
+  // 添加冲击波特效
+  addShockwave(comboEffectContainer, false);
+  
+  // 添加到特效容器
+  comboEffectContainer.appendChild(effect);
+  
+  // 动画结束后移除元素
+  effect.addEventListener('animationend', function() {
+    if (comboEffectContainer.contains(effect)) {
+      comboEffectContainer.removeChild(effect);
+    }
+  });
+}
+
+// 显示超级连击特效
+function showSuperComboEffect(card1, card2, text) {
+  // 获取连击特效容器
+  const comboEffectContainer = document.getElementById('combo-effect-container');
+  
+  // 创建超级连击特效元素
+  const effect = document.createElement('div');
+  effect.classList.add('combo-effect-display', 'super-combo-effect-display');
+  effect.textContent = text;
+  
+  // 添加震动效果
+  document.body.classList.add('shake');
+  setTimeout(() => {
+    document.body.classList.remove('shake');
+  }, 500);
+  
+  // 添加超级冲击波特效
+  addShockwave(comboEffectContainer, true);
+  
+  // 添加到特效容器
+  comboEffectContainer.appendChild(effect);
+  
+  // 动画结束后移除元素
+  effect.addEventListener('animationend', function() {
+    if (comboEffectContainer.contains(effect)) {
+      comboEffectContainer.removeChild(effect);
+    }
+  });
+}
+
+// 添加冲击波特效
+function addShockwave(container, isSuper) {
+  // 创建冲击波元素
+  const shockwave = document.createElement('div');
+  shockwave.classList.add('combo-shockwave');
+  
+  if (isSuper) {
+    shockwave.classList.add('super-combo-shockwave');
+  }
+  
+  // 设置冲击波位置（居中）
+  shockwave.style.position = 'absolute';
+  shockwave.style.top = '50%';
+  shockwave.style.left = '50%';
+  shockwave.style.transform = 'translate(-50%, -50%)';
+  
+  // 添加到容器
+  container.appendChild(shockwave);
+  
+  // 动画结束后移除
+  shockwave.addEventListener('animationend', function() {
+    if (container.contains(shockwave)) {
+      container.removeChild(shockwave);
+    }
+  });
 }
 
 // 禁用已匹配的卡片
