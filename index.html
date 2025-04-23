@@ -95,6 +95,9 @@
     <audio id="super-combo-sound" preload="auto">
       <source src="sounds/super_combo.mp3" type="audio/mp3" />
     </audio>
+    <audio id="fail-sound" preload="auto">
+      <source src="sounds/fail.mp3" type="audio/mp3" />
+    </audio>
 
     <!-- 排行榜模态框 -->
     <div id="rank-modal" class="modal">
@@ -144,6 +147,27 @@
         </div>
         <div class="modal-footer">
           <button id="save-score" class="game-btn">保存成绩</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 失败模态框 -->
+    <div id="fail-modal" class="modal">
+      <div class="modal-content fail-modal-content">
+        <div class="modal-header">
+          <h2>有小狗被落下啦...</h2>
+        </div>
+        <div class="modal-body">
+          <div class="fail-image">
+            <img src="images/fail.jpeg" alt="失败" />
+          </div>
+          <div class="fail-message">
+            <p>别气馁，再来一次吧！</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="close-fail" class="game-btn">关闭</button>
+          <button id="retry-btn" class="game-btn">再试一次</button>
         </div>
       </div>
     </div>

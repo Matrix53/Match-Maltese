@@ -8,6 +8,7 @@ const rankBtn = document.getElementById('rank-btn')
 const bgMusic = document.getElementById('bg-music')
 const rankModal = document.getElementById('rank-modal')
 const winModal = document.getElementById('win-modal')
+const failModal = document.getElementById('fail-modal')
 const rankList = document.getElementById('rank-list')
 const emptyRank = document.getElementById('empty-rank')
 const closeRankBtn = document.getElementById('close-rank')
@@ -18,12 +19,15 @@ const playerNameInput = document.getElementById('player-name')
 const saveScoreBtn = document.getElementById('save-score')
 const gameHeader = document.querySelector('.game-header')
 const gameFooter = document.querySelector('.game-footer')
+const closeFailBtn = document.getElementById('close-fail')
+const retryBtn = document.getElementById('retry-btn')
 
 // 音效元素
 const scoreSound = document.getElementById('score-sound')
 const winSound = document.getElementById('win-sound')
 const comboSound = document.getElementById('combo-sound')
 const superComboSound = document.getElementById('super-combo-sound')
+const failSound = document.getElementById('fail-sound')
 
 // 游戏状态
 let cards = []
@@ -39,6 +43,10 @@ let currentPotentialScore = 200 // 每对卡片的最高得分
 let comboCount = 0 // 连击计数
 let comboTimer = null // 连击计时器
 let lastMatchTime = 0 // 上次匹配时间
+let gameActive = false // 游戏是否激活中
+const TIME_LIMIT = 60 // 游戏时间限制（秒）
+const TIME_WARNING = 30 // 剩余时间警告（秒）
+let timeWarningShown = false // 是否已显示时间警告
 
 // 初始化游戏
 function initGame() {
@@ -56,6 +64,12 @@ function initGame() {
   currentPotentialScore = 200
   comboCount = 0 // 重置连击计数
   lastMatchTime = 0 // 重置上次匹配时间
+  gameActive = true // 激活游戏
+  timeWarningShown = false // 重置时间警告状态
+
+  // 移除时间警告样式
+  timeElement.classList.remove('time-warning')
+  timeElement.classList.remove('time-critical')
 
   // 更新显示
   scoreElement.textContent = score
@@ -71,6 +85,32 @@ function initGame() {
   gameTimer = setInterval(() => {
     timeElapsed++
     timeElement.textContent = timeElapsed
+    
+    // 检查剩余时间并添加视觉警告
+    const timeLeft = TIME_LIMIT - timeElapsed
+    
+    // 游戏失败检查
+    if (timeLeft <= 0 && gameActive) {
+      gameOver()
+      return
+    }
+    
+    // 显示30秒警告
+    if (timeLeft === TIME_WARNING && !timeWarningShown) {
+      showTimeWarning()
+      timeWarningShown = true
+    }
+    
+    // 剩余时间少于30秒，添加警告效果
+    if (timeLeft <= TIME_WARNING && timeLeft > 10) {
+      timeElement.classList.add('time-warning')
+      timeElement.classList.remove('time-critical')
+    } 
+    // 剩余时间少于10秒，添加危急效果
+    else if (timeLeft <= 10) {
+      timeElement.classList.remove('time-warning')
+      timeElement.classList.add('time-critical')
+    }
   }, 1000)
 
   // 启动分数递减计时器
@@ -79,6 +119,66 @@ function initGame() {
       currentPotentialScore--
     }
   }, 1000)
+}
+
+// 显示时间警告
+function showTimeWarning() {
+  const alertElement = document.createElement('div');
+  alertElement.classList.add('time-alert');
+  
+  // 使用更友好的提示文本
+  alertElement.textContent = `还剩${TIME_WARNING}秒哦`;
+  
+  // 将提示放在游戏板元素内部的底部位置
+  const gameBoard = document.querySelector('.game-board');
+  gameBoard.appendChild(alertElement);
+  
+  // 轻微震动效果，降低强度
+  setTimeout(() => {
+    document.body.classList.add('light-shake');
+    setTimeout(() => {
+      document.body.classList.remove('light-shake');
+    }, 300); // 减少震动时间
+  }, 100); // 延迟一点点再震动
+  
+  // 4秒后自动淡出
+  setTimeout(() => {
+    if (gameBoard.contains(alertElement)) {
+      alertElement.style.animation = 'fadeOut 0.8s forwards';
+      
+      // 动画结束后再移除元素
+      setTimeout(() => {
+        if (gameBoard.contains(alertElement)) {
+          gameBoard.removeChild(alertElement);
+        }
+      }, 800);
+    }
+  }, 4000);
+}
+
+// 为时间警告添加淡出动画
+const fadeOutStyle = document.createElement('style');
+fadeOutStyle.textContent = `
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translate(-50%, -60%); }
+}`;
+document.head.appendChild(fadeOutStyle);
+
+// 游戏失败处理
+function gameOver() {
+  clearInterval(gameTimer)
+  clearInterval(scoreTimer)
+  gameActive = false
+  
+  // 播放失败音效
+  failSound.play()
+  
+  // 显示失败模态框
+  failModal.style.display = 'flex'
+  
+  // 解锁游戏板，防止卡在锁定状态
+  lockBoard = false
 }
 
 // 创建卡片
@@ -561,10 +661,11 @@ function resetBoard() {
   lockBoard = false
 }
 
-// 结束游戏
+// 结束游戏（胜利）
 function endGame() {
   clearInterval(gameTimer)
   clearInterval(scoreTimer)
+  gameActive = false
 
   // 播放胜利音效
   winSound.play()
@@ -808,6 +909,16 @@ document.addEventListener('DOMContentLoaded', () => {
   )
   saveScoreBtn.addEventListener('click', saveScore)
   shareRankBtn.addEventListener('click', shareRanking)
+  
+  // 失败模态框按钮事件
+  closeFailBtn.addEventListener('click', () => {
+    failModal.style.display = 'none'
+  })
+  
+  retryBtn.addEventListener('click', () => {
+    failModal.style.display = 'none'
+    initGame()
+  })
 
   // 音乐播放状态标记
   let musicStarted = false

@@ -321,7 +321,7 @@ body {
 /* 按钮样式 */
 .game-btn {
   display: inline-block !important; /* 强制显示 */
-  visibility: visible !重要; /* 修正为正确的 important 关键字 */
+  visibility: visible !important; /* 修正为正确的 important 关键字 */
   opacity: 1 !important; /* 确保不透明 */
   padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
@@ -1098,5 +1098,152 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* 失败模态框特殊样式 */
+.fail-modal-content {
+  background-color: #fff0f0;
+}
+
+.fail-image {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.fail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fail-message {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: #777;
+}
+
+/* 时间紧迫警告效果 - 改为更温和友好的颜色 */
+.time-warning {
+  animation: timeWarningPulse 1.5s infinite alternate;
+  color: #ff9c52 !important; /* 使用游戏主题的橙色代替鲜红色 */
+  text-shadow: 0 0 5px rgba(255, 156, 82, 0.5) !important;
+}
+
+@keyframes timeWarningPulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 5px rgba(255, 156, 82, 0.5);
+  }
+  100% {
+    transform: scale(1.15);
+    text-shadow: 0 0 10px rgba(255, 156, 82, 0.8), 0 0 15px rgba(255, 119, 48, 0.5);
+  }
+}
+
+/* 时间危急警告效果 - 改为更符合游戏主题的颜色 */
+.time-critical {
+  animation: timeCriticalPulse 0.8s infinite alternate;
+  color: #ff7730 !important; /* 使用更深的橙色而不是鲜红色 */
+  text-shadow: 0 0 8px rgba(255, 119, 48, 0.7) !important;
+}
+
+@keyframes timeCriticalPulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 8px rgba(255, 119, 48, 0.7);
+  }
+  100% {
+    transform: scale(1.25);
+    text-shadow: 0 0 15px rgba(255, 119, 48, 0.9), 0 0 20px rgba(255, 156, 82, 0.6);
+  }
+}
+
+/* 时间提示样式优化 - 更透明且位置更合适 */
+.time-alert {
+  position: absolute;
+  top: auto;
+  bottom: -45px; /* 将提示放在游戏板的下方，按钮区的上方 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 156, 82, 0.7); /* 增加透明度 */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(255, 156, 82, 0.3);
+  z-index: 20; /* 确保在游戏板和按钮之间 */
+  text-align: center;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  animation: gentleAlertNew 0.6s ease-in-out;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  max-width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  pointer-events: none; /* 让点击能穿透提示框 */
+}
+
+.time-alert::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url(images/paw.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0) invert(1);
+  animation: pawWiggle 1s ease-in-out infinite alternate;
+}
+
+@keyframes gentleAlertNew {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+
+@keyframes gentleAlert {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -80%);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -40%);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
   }
 }
