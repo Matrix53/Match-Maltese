@@ -133,13 +133,14 @@ function showTimeWarning() {
   const gameBoard = document.querySelector('.game-board')
   gameBoard.appendChild(alertElement)
 
-  // // 轻微震动效果，降低强度
-  // setTimeout(() => {
-  //   document.body.classList.add('light-shake')
-  //   setTimeout(() => {
-  //     document.body.classList.remove('light-shake')
-  //   }, 300) // 减少震动时间
-  // }, 100) // 延迟一点点再震动
+  // 轻微震动效果，降低强度，适配小屏幕
+  setTimeout(() => {
+    // 只对游戏板应用震动，而不是整个页面
+    gameBoard.classList.add('light-shake')
+    setTimeout(() => {
+      gameBoard.classList.remove('light-shake')
+    }, 300) // 减少震动时间
+  }, 100) // 延迟一点点再震动
 
   // 4秒后自动淡出
   setTimeout(() => {
@@ -518,10 +519,11 @@ function showSuperComboEffect(card1, card2, text) {
     // 增加额外的发光效果
     effect.style.filter = 'brightness(1.2)'
 
-    // 添加更强烈的震动效果
-    document.body.classList.add('shake')
+    // 添加更强烈的震动效果 - 只对游戏板应用
+    const gameBoard = document.querySelector('.game-board')
+    gameBoard.classList.add('shake')
     setTimeout(() => {
-      document.body.classList.remove('shake')
+      gameBoard.classList.remove('shake')
     }, 600)
 
     // 添加双层冲击波特效
@@ -531,9 +533,10 @@ function showSuperComboEffect(card1, card2, text) {
     }, 200)
   } else {
     // 3-4连击，标准超级连击效果
-    document.body.classList.add('shake')
+    const gameBoard = document.querySelector('.game-board')
+    gameBoard.classList.add('shake')
     setTimeout(() => {
-      document.body.classList.remove('shake')
+      gameBoard.classList.remove('shake')
     }, 500)
 
     // 添加标准超级冲击波特效

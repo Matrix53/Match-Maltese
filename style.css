@@ -322,7 +322,7 @@ body {
 /* 按钮样式 */
 .game-btn {
   display: inline-block !important; /* 强制显示 */
-  visibility: visible !important; /* 修正为正确的 important 关键字 */
+  visibility: visible !重要; /* 修正为正确的 important 关键字 */
   opacity: 1 !important; /* 确保不透明 */
   padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
@@ -940,6 +940,10 @@ body {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+  max-height: 100%;
+  overflow: hidden;
+  position: relative;
+  will-change: transform;
 }
 
 .light-shake {
@@ -947,6 +951,10 @@ body {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+  max-height: 100%;
+  overflow: hidden;
+  position: relative;
+  will-change: transform;
 }
 
 /* 响应式调整 */
