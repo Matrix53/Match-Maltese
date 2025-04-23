@@ -475,11 +475,12 @@ function showComboEffect(card1, card2, text) {
     '0 0 30px rgba(255, 119, 48, 0.3), inset 0 0 15px rgba(255, 119, 48, 0.2)'
   shockwave.style.animation = 'shockwaveEffect 1.0s ease-out forwards' // 比单次匹配更慢，更持久
 
-  // 添加轻微震动效果 (2连击比单次匹配增加轻微震动)
-  document.body.classList.add('light-shake')
+  // 2连击比单次匹配增加轻微震动 - 只对游戏板应用
+  const gameBoard = document.querySelector('.game-board')
+  gameBoard.classList.add('light-shake')
   setTimeout(() => {
-    document.body.classList.remove('light-shake')
-  }, 300)
+    gameBoard.classList.remove('light-shake')
+  }, 400)
 
   // 添加特效到容器
   comboEffectContainer.appendChild(effect)
@@ -1068,7 +1069,7 @@ function ensureGameLayout() {
     comboDisplay.style.maxWidth = layoutWidth
   }
 
-    if (comboEffectContainer) {
+  if (comboEffectContainer) {
     comboEffectContainer.style.width = '100%'
     comboEffectContainer.style.maxWidth = layoutWidth
     comboEffectContainer.style.position = 'relative'
@@ -1133,7 +1134,7 @@ function ensureGameLayout() {
       comboEffectContainer.style.top = '0'
       comboEffectContainer.style.left = '0'
       comboEffectContainer.style.width = '100%'
-          }
+    }
 
     if (comboDisplay) {
       comboDisplay.style.position = 'absolute'
