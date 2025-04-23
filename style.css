@@ -73,7 +73,7 @@ body {
   padding: 15px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   position: relative;
 }
@@ -274,7 +274,7 @@ body {
   font-weight: bold;
   text-shadow: 2px 2px 0 white;
   pointer-events: none;
-  animation: scorePopup 1.5s forwards;
+  animation: scorePopup 2s forwards; /* 延长时间，从1.5s到2s */
   z-index: 10;
 }
 
@@ -283,7 +283,7 @@ body {
     transform: translateY(0) scale(0.5);
     opacity: 0;
   }
-  20% {
+  15% {
     transform: translateY(-20px) scale(1.5);
     opacity: 1;
   }
@@ -321,7 +321,7 @@ body {
 /* 按钮样式 */
 .game-btn {
   display: inline-block !important; /* 强制显示 */
-  visibility: visible !important; /* 修正为正确的 important 关键字 */
+  visibility: visible !重要; /* 修正为正确的 important 关键字 */
   opacity: 1 !important; /* 确保不透明 */
   padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
@@ -707,7 +707,7 @@ body {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
   z-index: 100;
   white-space: nowrap;
-  animation: comboEffect 1.2s forwards ease-out;
+  animation: comboEffect 1.5s forwards ease-out; /* 延长时间，从1.2s到1.5s */
 }
 
 @keyframes comboEffect {
@@ -715,7 +715,7 @@ body {
     transform: translate(-50%, -50%) scale(0.5);
     opacity: 0;
   }
-  25% {
+  20% {
     transform: translate(-50%, -50%) scale(1.2);
     opacity: 1;
   }
@@ -731,10 +731,10 @@ body {
 
 /* 超级连击特效 */
 .super-combo-effect {
-  animation: superComboEffect 1.5s forwards cubic-bezier(0.11, 0.65, 0.33, 1);
+  animation: superComboEffect 1.8s forwards cubic-bezier(0.11, 0.65, 0.33, 1); /* 延长时间，从1.5s到1.8s */
   color: #ffdd00;
   text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 0 0 20px rgba(255, 221, 0, 0.5), 0 0 30px rgba(255, 151, 0, 0.3);
-  font-size: 2.5rem;
+  font-size: 2.3rem; /* 改小一点，从2.5rem到2.3rem，使其与普通连击更接近 */
 }
 
 @keyframes superComboEffect {
@@ -779,7 +779,7 @@ body {
 .combo-effect-display {
   position: absolute;
   pointer-events: none;
-  font-size: 2.5rem;
+  font-size: 2.2rem; /* 调整基础字体大小为2.2rem，从原来的2.5rem */
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
@@ -788,7 +788,7 @@ body {
   text-align: center;
   transform-origin: center center;
   width: 100%;
-  animation: comboEffectDisplay 1.2s forwards ease-out;
+  animation: comboEffectDisplay 1.5s forwards ease-out; /* 延长时间，从1.2s到1.5s */
   z-index: 100;
 }
 
@@ -803,7 +803,7 @@ body {
     opacity: 1;
     filter: blur(0);
   }
-  50% {
+  60% { /* 延长停留时间，从50%到60% */
     transform: scale(1) translateY(0);
     opacity: 1;
     filter: blur(0);
@@ -817,13 +817,13 @@ body {
 
 /* 超级连击特效（现在放在专门的容器中） */
 .super-combo-effect-display {
-  font-size: 3rem;
+  font-size: 2.5rem; /* 从3rem改为2.5rem，使得与普通连击效果更协调 */
   color: #ffdd00;
   text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 
                0 0 20px rgba(255, 221, 0, 0.5), 
                0 0 30px rgba(255, 151, 0, 0.3),
                0 0 2px #ff5252;
-  animation: superComboEffectDisplay 1.5s forwards cubic-bezier(0.11, 0.65, 0.33, 1);
+  animation: superComboEffectDisplay 1.8s forwards cubic-bezier(0.11, 0.65, 0.33, 1); /* 延长时间，从1.5s到1.8s */
 }
 
 @keyframes superComboEffectDisplay {
@@ -842,9 +842,9 @@ body {
     opacity: 1;
     filter: blur(0);
   }
-  80% {
+  70% { /* 延长停留时间，从60%到70% */
     transform: scale(1) translateY(-20px) rotate(1deg);
-    opacity: 0.8;
+    opacity: 0.9; /* 增加透明度，从0.8到0.9 */
     filter: blur(0);
   }
   100% {
@@ -865,11 +865,16 @@ body {
   pointer-events: none;
 }
 
+/* 超级连击冲击波 - 更强的效果 */
 .super-combo-shockwave {
   background-color: rgba(255, 82, 82, 0.2);
-  box-shadow: 0 0 40px rgba(255, 82, 82, 0.4), inset 0 0 20px rgba(255, 82, 82, 0.3);
+  box-shadow: 0 0 40px rgba(255, 82, 82, 0.4), 
+              inset 0 0 20px rgba(255, 82, 82, 0.3),
+              0 0 60px 10px rgba(255, 221, 0, 0.3);
+  animation: superShockwaveEffect 1.2s ease-out forwards !important;
 }
 
+/* 修改普通冲击波动画 */
 @keyframes shockwaveEffect {
   0% {
     width: 0;
@@ -880,6 +885,26 @@ body {
     width: 300px;
     height: 300px;
     opacity: 0;
+  }
+}
+
+/* 新增超级冲击波动画 */
+@keyframes superShockwaveEffect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  100% {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
@@ -896,8 +921,28 @@ body {
   }
 }
 
+/* 添加轻微震动效果 */
+@keyframes lightShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25%, 75% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
+}
+
 .shake {
   animation: screenShake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.light-shake {
+  animation: lightShake 0.3s cubic-bezier(.36,.07,.19,.97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
@@ -1053,74 +1098,5 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-/* 新增对手机Edge浏览器的特殊兼容处理 */
-@supports (-ms-ime-align: auto) {
-  .game-footer {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    padding: 10px;
-    text-align: center;
-    z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .game-btn {
-    transform: none !important;
-    display: inline-block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* 针对Edge移动版的游戏板居中修复 */
-  .game-board {
-    margin: 0 auto !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    max-height: calc(100vh - 300px) !important; /* 确保留出足够空间给按钮 */
-  }
-
-  .game-container {
-    justify-content: center !important;
-    align-items: center !important;
-    padding-top: 60px !important; /* 顶部增加空间 */
-    padding-bottom: 80px !important; /* 底部增加空间给按钮 */
-  }
-
-  /* 确保顶部信息条可见 */
-  .game-header {
-    position: absolute !important;
-    top: 10px !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    z-index: 100 !important;
-  }
-}
-
-/* 修复SVG在Firefox中的兼容性问题 */
-@-moz-document url-prefix() {
-  .status-icon {
-    width: 1.1rem;
-    height: 1.1rem;
-    position: relative;
-    top: -0.05rem;
-  }
-}
-
-/* 修复SVG在Edge中的兼容性问题 */
-@supports (-ms-ime-align: auto) {
-  .status-icon {
-    position: relative;
-    top: 0.1rem;
-    margin-left: 0.2rem;
   }
 }

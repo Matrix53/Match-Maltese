@@ -225,62 +225,64 @@ function addScore() {
   let comboMultiplier = 1;
   
   // 根据连击数更新显示和奖励系数
-  if (comboCount > 1) {
-    // 显示连击计数
+  if (comboCount === 1) {
+    // 单次匹配也显示简单特效，增加打击感
+    showSimpleMatchEffect(firstCard, secondCard, "匹配!");
+    
+    // 播放普通得分音效
+    scoreSound.currentTime = 0;
+    scoreSound.play();
+  } else if (comboCount === 2) {
+    // 普通连击：2连击
+    comboCountElement.textContent = comboCount;
+    comboMultiplier = 1.5;
+    showComboEffect(firstCard, secondCard, `${comboCount}连击!`);
+    
+    // 播放连击音效
+    comboSound.currentTime = 0;
+    comboSound.play();
+    
+    // 显示连击条
+    comboDisplay.classList.add('active');
+    comboDisplay.classList.add('pulse');
+    comboDisplay.classList.remove('super');
+    
+    // 连击条脉冲效果
+    setTimeout(() => {
+      comboDisplay.classList.remove('pulse');
+    }, 600);
+  } else if (comboCount >= 3) {
+    // 超级连击：3连击以上(原来是4连击以上)
+    comboMultiplier = 2 + (comboCount - 3) * 0.5; // 递增奖励(调整基数为3)
+    comboMultiplier = Math.min(comboMultiplier, 5); // 限制最大倍率为5倍
+    
+    // 更新连击计数显示
     comboCountElement.textContent = comboCount;
     
-    // 计算奖励系数
-    if (comboCount >= 2 && comboCount < 4) {
-      // 普通连击：2x 和 3x
-      comboMultiplier = 1.5;
-      showComboEffect(firstCard, secondCard, `${comboCount}连击!`);
-      
-      // 播放连击音效
-      comboSound.currentTime = 0;
-      comboSound.play();
-      
-      // 显示连击条
-      comboDisplay.classList.add('active');
-      comboDisplay.classList.add('pulse');
-      comboDisplay.classList.remove('super');
-      
-      // 连击条脉冲效果
-      setTimeout(() => {
-        comboDisplay.classList.remove('pulse');
-      }, 600);
-    } else if (comboCount >= 4) {
-      // 超级连击：4连击以上
-      comboMultiplier = 2 + (comboCount - 4) * 0.5; // 递增奖励
-      comboMultiplier = Math.min(comboMultiplier, 5); // 限制最大倍率为5倍
-      
-      showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`);
-      
-      // 播放超级连击音效
-      superComboSound.currentTime = 0;
-      superComboSound.play();
-      
-      // 更新连击显示样式
-      comboDisplay.classList.add('active');
-      comboDisplay.classList.add('pulse');
-      comboDisplay.classList.add('super');
-      
-      setTimeout(() => {
-        comboDisplay.classList.remove('pulse');
-      }, 600);
-    }
+    showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`);
     
-    // 重设连击超时计时器
-    if (comboTimer) clearTimeout(comboTimer);
-    comboTimer = setTimeout(() => {
-      // 连击超时
-      comboDisplay.classList.remove('active');
-      comboDisplay.classList.remove('super');
-      comboCount = 0;
-    }, 4000); // 4秒后重置连击
-  } else {
-    // 首次匹配，播放普通得分音效
-    scoreSound.play();
+    // 播放超级连击音效
+    superComboSound.currentTime = 0;
+    superComboSound.play();
+    
+    // 更新连击显示样式
+    comboDisplay.classList.add('active');
+    comboDisplay.classList.add('pulse');
+    comboDisplay.classList.add('super');
+    
+    setTimeout(() => {
+      comboDisplay.classList.remove('pulse');
+    }, 600);
   }
+  
+  // 重设连击超时计时器，延长至5秒(原来是4秒)
+  if (comboTimer) clearTimeout(comboTimer);
+  comboTimer = setTimeout(() => {
+    // 连击超时
+    comboDisplay.classList.remove('active');
+    comboDisplay.classList.remove('super');
+    comboCount = 0;
+  }, 5000); // 5秒后重置连击
   
   // 计算本次得分（基础分数 * 连击系数）
   const pointsEarned = Math.round(currentPotentialScore * comboMultiplier);
@@ -297,15 +299,17 @@ function addScore() {
   if (comboCount > 1) {
     scorePopup.textContent = `+${pointsEarned} (x${comboMultiplier.toFixed(1)})`;
     // 连击得分颜色特殊处理
-    if (comboCount >= 4) {
+    if (comboCount >= 3) { // 从4连击改为3连击
       scorePopup.style.color = '#ff5252';
-      scorePopup.style.fontSize = '1.8rem';
+      scorePopup.style.fontSize = '1.6rem'; // 改小一点，使尺寸更统一
       scorePopup.style.textShadow = '2px 2px 0 white, 0 0 10px rgba(255, 82, 82, 0.7)';
     } else {
       scorePopup.style.color = '#ff7730';
+      scorePopup.style.fontSize = '1.5rem'; // 调整为更接近的大小
     }
   } else {
     scorePopup.textContent = `+${pointsEarned}`;
+    scorePopup.style.fontSize = '1.4rem'; // 增大单次匹配的字号，提升视觉反馈
   }
 
   // 计算加分动画位置（两张卡片中间）
@@ -323,10 +327,12 @@ function addScore() {
   firstCard.classList.add('matched');
   secondCard.classList.add('matched');
 
-  // 清除动画元素
+  // 清除动画元素 - 延长时间为2000ms (原来是1500ms)
   setTimeout(() => {
-    gameBoard.removeChild(scorePopup);
-  }, 1500);
+    if (gameBoard.contains(scorePopup)) {
+      gameBoard.removeChild(scorePopup);
+    }
+  }, 2000);
 
   // 重置当前分数计算器
   currentPotentialScore = 200;
@@ -349,17 +355,41 @@ function showComboEffect(card1, card2, text) {
   const effect = document.createElement('div');
   effect.classList.add('combo-effect-display');
   effect.textContent = text;
+  effect.style.color = '#ff7730'; // 橙色，比单次匹配更鲜艳
+  effect.style.fontSize = '2.0rem'; // 比单次匹配更大
+  effect.style.textShadow = '0 0 10px rgba(255, 119, 48, 0.8), 0 0 20px rgba(255, 119, 48, 0.5)';
   
-  // 添加冲击波特效
-  addShockwave(comboEffectContainer, false);
+  // 添加中型冲击波特效 (比单次匹配更强)
+  const shockwave = document.createElement('div');
+  shockwave.classList.add('combo-shockwave');
+  shockwave.style.position = 'absolute';
+  shockwave.style.top = '50%';
+  shockwave.style.left = '50%';
+  shockwave.style.transform = 'translate(-50%, -50%)';
+  shockwave.style.backgroundColor = 'rgba(255, 119, 48, 0.15)'; // 更强的冲击波
+  shockwave.style.boxShadow = '0 0 30px rgba(255, 119, 48, 0.3), inset 0 0 15px rgba(255, 119, 48, 0.2)';
+  shockwave.style.animation = 'shockwaveEffect 1.0s ease-out forwards'; // 比单次匹配更慢，更持久
   
-  // 添加到特效容器
+  // 添加轻微震动效果 (2连击比单次匹配增加轻微震动)
+  document.body.classList.add('light-shake');
+  setTimeout(() => {
+    document.body.classList.remove('light-shake');
+  }, 300);
+  
+  // 添加特效到容器
   comboEffectContainer.appendChild(effect);
+  comboEffectContainer.appendChild(shockwave);
   
   // 动画结束后移除元素
   effect.addEventListener('animationend', function() {
     if (comboEffectContainer.contains(effect)) {
       comboEffectContainer.removeChild(effect);
+    }
+  });
+  
+  shockwave.addEventListener('animationend', function() {
+    if (comboEffectContainer.contains(shockwave)) {
+      comboEffectContainer.removeChild(shockwave);
     }
   });
 }
@@ -374,14 +404,36 @@ function showSuperComboEffect(card1, card2, text) {
   effect.classList.add('combo-effect-display', 'super-combo-effect-display');
   effect.textContent = text;
   
-  // 添加震动效果
-  document.body.classList.add('shake');
-  setTimeout(() => {
-    document.body.classList.remove('shake');
-  }, 500);
-  
-  // 添加超级冲击波特效
-  addShockwave(comboEffectContainer, true);
+  // 根据连击数调整特效强度
+  if (comboCount >= 5) {
+    // 5连击以上，更强烈的效果
+    effect.style.fontSize = '2.7rem';
+    effect.style.textShadow = '0 0 15px rgba(255, 221, 0, 0.9), 0 0 30px rgba(255, 221, 0, 0.7), 0 0 40px rgba(255, 151, 0, 0.5), 0 0 3px #ff5252';
+    
+    // 增加额外的发光效果
+    effect.style.filter = 'brightness(1.2)';
+    
+    // 添加更强烈的震动效果
+    document.body.classList.add('shake');
+    setTimeout(() => {
+      document.body.classList.remove('shake');
+    }, 600);
+    
+    // 添加双层冲击波特效
+    addSuperShockwave(comboEffectContainer);
+    setTimeout(() => {
+      addSuperShockwave(comboEffectContainer);
+    }, 200);
+  } else {
+    // 3-4连击，标准超级连击效果
+    document.body.classList.add('shake');
+    setTimeout(() => {
+      document.body.classList.remove('shake');
+    }, 500);
+    
+    // 添加标准超级冲击波特效
+    addSuperShockwave(comboEffectContainer);
+  }
   
   // 添加到特效容器
   comboEffectContainer.appendChild(effect);
@@ -390,6 +442,47 @@ function showSuperComboEffect(card1, card2, text) {
   effect.addEventListener('animationend', function() {
     if (comboEffectContainer.contains(effect)) {
       comboEffectContainer.removeChild(effect);
+    }
+  });
+}
+
+// 显示简单匹配特效 (新增函数，用于单次匹配)
+function showSimpleMatchEffect(card1, card2, text) {
+  // 获取连击特效容器
+  const comboEffectContainer = document.getElementById('combo-effect-container');
+  
+  // 创建简单匹配特效元素（样式比普通连击稍微小一些）
+  const effect = document.createElement('div');
+  effect.classList.add('combo-effect-display');
+  effect.textContent = text;
+  effect.style.fontSize = '1.8rem'; // 比连击稍小
+  effect.style.opacity = '0.85'; // 稍微透明一点
+  effect.style.color = '#ff9c52'; // 使用柔和的橙色
+  
+  // 添加小型冲击波特效
+  const shockwave = document.createElement('div');
+  shockwave.classList.add('combo-shockwave');
+  shockwave.style.position = 'absolute';
+  shockwave.style.top = '50%';
+  shockwave.style.left = '50%';
+  shockwave.style.transform = 'translate(-50%, -50%)';
+  shockwave.style.backgroundColor = 'rgba(255, 156, 82, 0.08)'; // 更轻微的冲击波
+  shockwave.style.animation = 'shockwaveEffect 0.7s ease-out forwards'; // 稍快的动画
+  
+  // 添加特效到容器
+  comboEffectContainer.appendChild(effect);
+  comboEffectContainer.appendChild(shockwave);
+  
+  // 动画结束后移除元素
+  effect.addEventListener('animationend', function() {
+    if (comboEffectContainer.contains(effect)) {
+      comboEffectContainer.removeChild(effect);
+    }
+  });
+  
+  shockwave.addEventListener('animationend', function() {
+    if (comboEffectContainer.contains(shockwave)) {
+      comboEffectContainer.removeChild(shockwave);
     }
   });
 }
@@ -403,6 +496,29 @@ function addShockwave(container, isSuper) {
   if (isSuper) {
     shockwave.classList.add('super-combo-shockwave');
   }
+  
+  // 设置冲击波位置（居中）
+  shockwave.style.position = 'absolute';
+  shockwave.style.top = '50%';
+  shockwave.style.left = '50%';
+  shockwave.style.transform = 'translate(-50%, -50%)';
+  
+  // 添加到容器
+  container.appendChild(shockwave);
+  
+  // 动画结束后移除
+  shockwave.addEventListener('animationend', function() {
+    if (container.contains(shockwave)) {
+      container.removeChild(shockwave);
+    }
+  });
+}
+
+// 添加超级冲击波特效 (新增函数，更强的震撼效果)
+function addSuperShockwave(container) {
+  // 创建冲击波元素
+  const shockwave = document.createElement('div');
+  shockwave.classList.add('combo-shockwave', 'super-combo-shockwave');
   
   // 设置冲击波位置（居中）
   shockwave.style.position = 'absolute';
@@ -543,54 +659,47 @@ function showLeaderboard() {
 
     rankList.innerHTML = rankHTML
 
-    // 确保奖牌图标大小适当
-    ensureMedalSizes()
+    // 优化奖牌图标大小和排行榜项样式 (整合了ensureMedalSizes函数)
+    const medals = document.querySelectorAll('.rank-medal')
+    medals.forEach((medal) => {
+      medal.style.width = '20px'
+      medal.style.height = '20px'
+      medal.style.verticalAlign = 'middle'
+      medal.style.marginTop = '-3px' // 微调垂直位置
+      medal.style.animation = 'medalShine 2s infinite alternate'
+
+      // 根据设备尺寸调整图标大小
+      if (window.innerWidth <= 375) {
+        medal.style.width = '18px'
+        medal.style.height = '18px'
+      } else if (window.innerWidth >= 768) {
+        medal.style.width = '24px'
+        medal.style.height = '24px'
+      }
+    })
+
+    // 为顶部排行榜添加反应式风格
+    const topRanks = document.querySelectorAll('.top-rank')
+    topRanks.forEach((rank, index) => {
+      // 根据名次设置不同的背景色深度
+      const opacity = 0.3 - index * 0.05
+      rank.style.backgroundColor = `rgba(255, 187, 123, ${opacity})`
+      rank.style.transition = 'all 0.3s ease'
+
+      // 添加鼠标悬停效果
+      rank.addEventListener('mouseenter', function () {
+        this.style.transform = 'translateX(5px)'
+        this.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
+      })
+
+      rank.addEventListener('mouseleave', function () {
+        this.style.transform = 'translateX(0)'
+        this.style.boxShadow = 'none'
+      })
+    })
   }
 
   rankModal.style.display = 'flex'
-}
-
-// 确保奖牌图标大小适当
-function ensureMedalSizes() {
-  const medals = document.querySelectorAll('.rank-medal')
-  medals.forEach((medal) => {
-    medal.style.width = '20px'
-    medal.style.height = '20px'
-    medal.style.verticalAlign = 'middle'
-    medal.style.marginTop = '-3px' // 微调垂直位置
-
-    // 添加一些动画效果
-    medal.style.animation = 'medalShine 2s infinite alternate'
-
-    // 根据设备尺寸调整图标大小
-    if (window.innerWidth <= 375) {
-      medal.style.width = '18px'
-      medal.style.height = '18px'
-    } else if (window.innerWidth >= 768) {
-      medal.style.width = '24px'
-      medal.style.height = '24px'
-    }
-  })
-
-  // 为顶部排行榜添加反应式风格
-  const topRanks = document.querySelectorAll('.top-rank')
-  topRanks.forEach((rank, index) => {
-    // 根据名次设置不同的背景色深度
-    const opacity = 0.3 - index * 0.05
-    rank.style.backgroundColor = `rgba(255, 187, 123, ${opacity})`
-    rank.style.transition = 'all 0.3s ease'
-
-    // 添加鼠标悬停效果
-    rank.addEventListener('mouseenter', function () {
-      this.style.transform = 'translateX(5px)'
-      this.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
-    })
-
-    rank.addEventListener('mouseleave', function () {
-      this.style.transform = 'translateX(0)'
-      this.style.boxShadow = 'none'
-    })
-  })
 }
 
 // 分享排行榜
@@ -686,11 +795,8 @@ function toggleMusic() {
 
 // 初始化
 document.addEventListener('DOMContentLoaded', () => {
-  // 确保按钮在所有平台上可见
-  ensureButtonVisibility()
-
-  // 确保宽屏上的布局一致性
-  ensureWideScreenLayout()
+  // 确保游戏布局在所有平台上正确显示
+  ensureGameLayout()
 
   // 绑定按钮事件
   startBtn.addEventListener('click', initGame)
@@ -726,196 +832,207 @@ document.addEventListener('DOMContentLoaded', () => {
     emptyRank.style.display = 'none'
   }
 
-  // 监听窗口大小变化，以便调整宽屏布局
-  window.addEventListener('resize', ensureWideScreenLayout)
+  // 监听窗口大小变化，以便调整布局
+  window.addEventListener('resize', ensureGameLayout)
 
   // 初始化游戏
   initGame()
 })
 
-// 确保按钮在所有平台上可见
-function ensureButtonVisibility() {
-  // 获取所有游戏按钮
-  const allButtons = document.querySelectorAll('.game-btn')
-
-  // 强制应用样式确保按钮可见
-  allButtons.forEach((button) => {
-    // 强制按钮可见
-    button.style.display = 'inline-block'
-    button.style.visibility = 'visible'
-    button.style.opacity = '1'
-
-    // 给按钮添加触摸事件监听器以确保在移动设备上有响应
-    button.addEventListener('touchstart', function (e) {
-      e.preventDefault() // 防止默认行为
-      // 模拟点击按钮
-      setTimeout(() => {
-        this.click()
-      }, 0)
-    })
-  })
-
-  // 特殊处理底部区域，确保它总是可见的
-  const footer = document.querySelector('.game-footer')
-  if (footer) {
-    footer.style.display = 'flex'
-    footer.style.zIndex = '10'
-
-    // 特别针对Edge浏览器的额外处理
-    if (
-      navigator.userAgent.indexOf('Edge') !== -1 ||
-      navigator.userAgent.indexOf('Edg') !== -1
-    ) {
-      footer.style.position = 'fixed'
-      footer.style.bottom = '10px'
-      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
-      footer.style.paddingTop = '5px'
-      footer.style.paddingBottom = '5px'
-    }
-  }
-
-  // 处理游戏板的居中问题，特别是在移动版Edge
-  ensureGameBoardCentering()
-}
-
-// 确保游戏板在所有浏览器中居中
-function ensureGameBoardCentering() {
-  // 获取游戏板元素
-  const gameBoard = document.querySelector('.game-board')
-  if (!gameBoard) return
-
-  // 判断浏览器类型
-  const isEdge =
-    navigator.userAgent.indexOf('Edge') !== -1 ||
-    navigator.userAgent.indexOf('Edg') !== -1
-  const isEdgeMobile =
-    isEdge &&
-    (navigator.userAgent.indexOf('Mobile') !== -1 ||
-      navigator.userAgent.indexOf('Android') !== -1 ||
-      navigator.userAgent.indexOf('iPhone') !== -1)
-  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
-
-  // 修改布局结构，确保元素可见性和正确定位
+// 整合后的布局函数：确保游戏布局在所有设备和浏览器中正确显示
+function ensureGameLayout() {
+  // 获取关键DOM元素
   const container = document.querySelector('.game-container')
+  const gameBoard = document.querySelector('.game-board')
   const header = document.querySelector('.game-header')
   const footer = document.querySelector('.game-footer')
-
-  // 应用通用居中样式
-  gameBoard.style.position = 'relative'
-  gameBoard.style.margin = 'auto'
-
-  // 确保按钮绝对可见
+  const comboDisplay = document.getElementById('combo-display')
+  const comboEffectContainer = document.getElementById('combo-effect-container')
   const allButtons = document.querySelectorAll('.game-btn')
-  allButtons.forEach((button) => {
+  
+  if (!gameBoard || !header || !footer) return
+  
+  // 检测浏览器类型
+  const isEdge = navigator.userAgent.indexOf('Edge') !== -1 || 
+                navigator.userAgent.indexOf('Edg') !== -1
+  const isEdgeMobile = isEdge && (
+    navigator.userAgent.indexOf('Mobile') !== -1 ||
+    navigator.userAgent.indexOf('Android') !== -1 ||
+    navigator.userAgent.indexOf('iPhone') !== -1
+  )
+  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
+  const isMobile = window.innerWidth <= 768 || 
+                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  
+  // 确保按钮在所有平台上可见
+  allButtons.forEach(button => {
     button.style.display = 'inline-block'
     button.style.visibility = 'visible'
     button.style.opacity = '1'
-    button.style.zIndex = '1000'
+    
+    // 添加触摸事件监听器以确保在移动设备上有响应
+    if (!button._touchListenerAdded) {
+      button.addEventListener('touchstart', function(e) {
+        e.preventDefault()
+        setTimeout(() => this.click(), 0)
+      })
+      button._touchListenerAdded = true
+    }
   })
-
+  
+  // 设置基础容器样式
+  if (container) {
+    container.style.display = 'flex'
+    container.style.flexDirection = 'column'
+    container.style.alignItems = 'center'
+    container.style.justifyContent = 'flex-start'
+    container.style.width = '100%'
+    container.style.minHeight = '100vh'
+    container.style.padding = isMobile ? '10px 5px' : '15px 10px'
+  }
+  
+  // 设置游戏板样式 - 保持为正方形
+  const boardSize = Math.min(
+    window.innerWidth * 0.85,
+    window.innerHeight * 0.6,
+    500  // 最大尺寸
+  )
+  
+  gameBoard.style.width = `${boardSize}px`
+  gameBoard.style.height = `${boardSize}px`
+  gameBoard.style.position = 'relative'
+  gameBoard.style.margin = '0 auto'
+  gameBoard.style.flexShrink = '0'
+  
+  // 统一顶部、底部和连击显示区域的宽度与游戏板一致
+  const layoutWidth = `${boardSize}px`
+  
+  // 设置顶部信息栏样式
+  header.style.width = '100%'
+  header.style.maxWidth = layoutWidth
+  header.style.position = 'relative'
+  header.style.marginBottom = '10px'
+  header.style.zIndex = '10'
+  
+  // 设置连击显示和特效容器
+  if (comboDisplay) {
+    comboDisplay.style.width = '100%'
+    comboDisplay.style.maxWidth = layoutWidth
+  }
+  
+  if (comboEffectContainer) {
+    comboEffectContainer.style.width = '100%'
+    comboEffectContainer.style.maxWidth = layoutWidth
+    comboEffectContainer.style.position = 'relative'
+    comboEffectContainer.style.height = '60px'
+    comboEffectContainer.style.marginBottom = '10px'
+  }
+  
+  // 设置底部按钮区域样式
+  footer.style.width = '100%'
+  footer.style.maxWidth = layoutWidth
+  footer.style.display = 'flex'
+  footer.style.justifyContent = 'space-around'
+  footer.style.flexWrap = 'wrap'
+  footer.style.marginTop = '15px'
+  footer.style.zIndex = '10'
+  
+  // 特定浏览器兼容性调整
   if (isEdgeMobile) {
-    console.log('Edge Mobile detected, applying special layout')
-
-    // 针对手机版Edge的特殊处理
-    // 确保游戏容器占满全屏并提供良好的间距
+    // Edge移动版特殊处理
+    container.style.padding = '15px 5px 70px 5px'
+    
+    // 调整游戏板大小以适应小屏幕边缘
+    gameBoard.style.width = `min(${boardSize}px, calc(100vw - 20px))`
+    gameBoard.style.height = gameBoard.style.width
+    
+    // 确保底部按钮区域始终可见
+    footer.style.position = 'fixed'
+    footer.style.bottom = '10px'
+    footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
+    footer.style.padding = '8px 5px'
+    footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)'
+    
+    // 重新计算其他元素宽度
+    const adjustedWidth = gameBoard.offsetWidth + 'px'
+    header.style.maxWidth = adjustedWidth
+    if (comboDisplay) comboDisplay.style.maxWidth = adjustedWidth
+    if (comboEffectContainer) comboEffectContainer.style.maxWidth = adjustedWidth
+    footer.style.maxWidth = adjustedWidth
+  } else if (isFirefox && isMobile) {
+    // Firefox移动版特殊处理
+    gameBoard.style.margin = '10px auto'
+    
+    // Firefox在某些移动设备上的特殊修复
+    const cardFronts = document.querySelectorAll('.card-front')
+    const cardBacks = document.querySelectorAll('.card-back')
+    
+    cardFronts.forEach(front => {
+      front.style.backfaceVisibility = 'hidden'
+      front.style.zIndex = '2'
+    })
+    
+    cardBacks.forEach(back => {
+      back.style.backfaceVisibility = 'hidden'
+      back.style.zIndex = '1'
+    })
+  }
+  
+  // 横屏模式特殊处理
+  if (window.innerWidth > window.innerHeight && window.innerHeight < 500) {
+    // 横屏且高度较小时，采用水平布局
+    const landscapeBoardSize = Math.min(window.innerHeight * 0.7, 450)
+    gameBoard.style.width = `${landscapeBoardSize}px`
+    gameBoard.style.height = `${landscapeBoardSize}px`
+    
     if (container) {
-      container.style.position = 'relative'
-      container.style.height = '100vh'
-      container.style.display = 'flex'
-      container.style.flexDirection = 'column'
-      container.style.justifyContent = 'space-between'
-      container.style.padding = '20px 10px 80px 10px'
+      container.style.flexDirection = 'row'
+      container.style.flexWrap = 'wrap'
+      container.style.justifyContent = 'center'
+      container.style.alignItems = 'center'
     }
-
-    // 确保游戏板居中
-    gameBoard.style.position = 'relative'
-    gameBoard.style.maxWidth = 'calc(100vw - 30px)'
-    gameBoard.style.maxHeight = 'calc(100vh - 240px)'
-    gameBoard.style.flexGrow = '0'
-    gameBoard.style.marginTop = '10px'
-    gameBoard.style.marginBottom = '10px'
-
-    // 确保底部按钮区域可见
-    if (footer) {
-      footer.style.position = 'relative'
-      footer.style.bottom = '0'
-      footer.style.width = '100%'
-      footer.style.padding = '10px 5px'
-      footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
-      footer.style.marginTop = '20px'
-      footer.style.zIndex = '1000'
-      footer.style.borderRadius = '15px'
-      footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)'
+    
+    header.style.width = '30%'
+    header.style.maxWidth = '200px'
+    header.style.marginBottom = '0'
+    
+    footer.style.width = '30%'
+    footer.style.maxWidth = '200px'
+    footer.style.marginLeft = '10px'
+    footer.style.flexDirection = 'column'
+    
+    // 调整连击显示器
+    if (comboEffectContainer) {
+      comboEffectContainer.style.position = 'absolute'
+      comboEffectContainer.style.top = '0'
+      comboEffectContainer.style.left = '0'
+      comboEffectContainer.style.width = '100%'
     }
-
-    // 确保顶部信息栏可见
-    if (header) {
-      header.style.position = 'relative'
-      header.style.top = '0'
-      header.style.width = '100%'
-      header.style.zIndex = '999'
-      header.style.marginBottom = '10px'
-    }
-  } else if (isFirefox && window.innerWidth < 768) {
-    // 针对手机版Firefox的特殊处理
-    gameBoard.style.marginTop = '60px'
-    gameBoard.style.marginBottom = '60px'
-
-    if (footer) {
-      footer.style.position = 'relative'
-      footer.style.marginTop = '15px'
-    }
-
-    if (header) {
-      header.style.position = 'relative'
-      header.style.marginBottom = '15px'
+    
+    if (comboDisplay) {
+      comboDisplay.style.position = 'absolute'
+      comboDisplay.style.bottom = '0'
+      comboDisplay.style.left = '50%'
+      comboDisplay.style.transform = 'translateX(-50%)'
+      comboDisplay.style.width = 'auto'
+      comboDisplay.style.minWidth = '120px'
     }
   } else {
-    // 其他浏览器的通用居中处理
-    gameBoard.style.margin = '20px auto'
-
+    // 竖屏或宽屏模式，恢复垂直布局
     if (container) {
-      container.style.justifyContent = 'space-between'
-      container.style.padding = '20px 10px'
+      container.style.flexDirection = 'column'
     }
-
-    if (footer) {
-      footer.style.position = 'relative'
-      footer.style.marginTop = '20px'
+    
+    header.style.width = '100%'
+    
+    footer.style.width = '100%'
+    footer.style.marginLeft = '0'
+    footer.style.flexDirection = 'row'
+    
+    if (comboDisplay) {
+      comboDisplay.style.position = 'relative'
+      comboDisplay.style.transform = 'none'
+      comboDisplay.style.width = '100%'
     }
-
-    if (header) {
-      header.style.position = 'relative'
-      header.style.marginBottom = '20px'
-    }
-  }
-
-  // 应用宽屏布局适配
-  ensureWideScreenLayout()
-
-  // 添加窗口大小变化监听器
-  window.addEventListener('resize', function () {
-    setTimeout(() => {
-      // 重新应用布局逻辑，确保窗口改变大小后仍然保持正确的布局
-      ensureGameBoardCentering()
-      // 重新应用宽屏布局适配
-      ensureWideScreenLayout()
-    }, 100)
-  })
-}
-
-// 确保在宽屏上的布局一致性
-function ensureWideScreenLayout() {
-  if (!gameBoard || !gameHeader || !gameFooter) return
-
-  const gameBoardWidth = gameBoard.offsetWidth
-
-  // 设置顶部和底部区域宽度与游戏区域相同
-  if (gameHeader) {
-    gameHeader.style.maxWidth = `${gameBoardWidth}px`
-  }
-
-  if (gameFooter) {
-    gameFooter.style.maxWidth = `${gameBoardWidth}px`
   }
 }

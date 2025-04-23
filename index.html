@@ -30,27 +30,35 @@
     <div class="background-animation"></div>
 
     <!-- 游戏容器 -->
-    <div class="game-container" style="min-height: 100vh; padding: 20px 10px; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+    <div class="game-container">
       <!-- 顶部信息栏 -->
-      <div class="game-header" style="width: 100%; max-width: min(85vw, min(85vh - 200px, 500px)); padding: 10px; margin-top: 10px; z-index: 10;">
+      <div class="game-header">
         <div class="status-wrapper">
           <div class="status-item">
             <div class="status-label">
               得分
-              <img src="images/score.svg" alt="得分" class="status-icon score-icon" />
+              <img
+                src="images/score.svg"
+                alt="得分"
+                class="status-icon score-icon"
+              />
             </div>
             <div id="score" class="status-value">0</div>
           </div>
           <div class="status-item">
             <div class="status-label">
               用时
-              <img src="images/time.svg" alt="用时" class="status-icon time-icon" />
+              <img
+                src="images/time.svg"
+                alt="用时"
+                class="status-icon time-icon"
+              />
             </div>
             <div id="time" class="status-value">0</div>
           </div>
         </div>
         <!-- 新增连击显示栏 -->
-        <div id="combo-display" class="combo-display" style="display: none;">
+        <div id="combo-display" class="combo-display" style="display: none">
           <div class="combo-text">连击 <span id="combo-count">0</span></div>
         </div>
       </div>
@@ -59,13 +67,13 @@
       <div id="combo-effect-container" class="combo-effect-container"></div>
 
       <!-- 游戏区域 -->
-      <div class="game-board" style="margin: 20px auto; position: relative; border-radius: 15px;"></div>
+      <div class="game-board"></div>
 
       <!-- 底部控制区 -->
-      <div class="game-footer" style="width: 100%; max-width: min(85vw, min(85vh - 200px, 500px)); display: flex !important; justify-content: space-around; padding: 10px 5px; margin-top: 15px; margin-bottom: 15px; z-index: 1000; background-color: rgba(255, 255, 255, 0.3); border-radius: 15px;">
-        <button id="start-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">新游戏</button>
-        <button id="music-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">🔈 音乐关</button>
-        <button id="rank-btn" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">排行榜</button>
+      <div class="game-footer">
+        <button id="start-btn" class="game-btn">新游戏</button>
+        <button id="music-btn" class="game-btn">🔈 音乐关</button>
+        <button id="rank-btn" class="game-btn">排行榜</button>
       </div>
     </div>
 
@@ -104,8 +112,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="close-rank" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">关闭</button>
-          <button id="share-rank" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">分享</button>
+          <button id="close-rank" class="game-btn">关闭</button>
+          <button id="share-rank" class="game-btn">分享</button>
         </div>
       </div>
     </div>
@@ -135,7 +143,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button id="save-score" class="game-btn" style="display: inline-block !important; visibility: visible !important; opacity: 1 !important;">保存成绩</button>
+          <button id="save-score" class="game-btn">保存成绩</button>
         </div>
       </div>
     </div>
