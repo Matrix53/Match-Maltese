@@ -321,9 +321,7 @@ body {
 
 /* 按钮样式 */
 .game-btn {
-  display: inline-block !important; /* 强制显示 */
-  visibility: visible !重要; /* 修正为正确的 important 关键字 */
-  opacity: 1 !important; /* 确保不透明 */
+  display: inline-block !important;
   padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
