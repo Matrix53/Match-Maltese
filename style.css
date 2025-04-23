@@ -627,138 +627,6 @@ body {
   box-shadow: 0 0 0 3px rgba(255, 156, 82, 0.3);
 }
 
-/* 新增连击显示样式 */
-.combo-display {
-  margin-top: 10px;
-  background: linear-gradient(135deg, #ff9c52, #ff7730);
-  border-radius: 15px;
-  padding: 8px 15px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), inset 0 0 0 2px #fff;
-  transform: translateY(0);
-  transition: all 0.3s ease;
-  opacity: 0;
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-.combo-display.active {
-  opacity: 1;
-  transform: translateY(0);
-  animation: comboReveal 0.5s ease-out;
-}
-
-.combo-display.pulse {
-  animation: comboPulse 0.6s ease-out;
-}
-
-.combo-display.super {
-  background: linear-gradient(135deg, #ff5252, #ff1f1f);
-  box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4), inset 0 0 0 2px #fff, 0 0 20px rgba(255, 82, 82, 0.6);
-}
-
-@keyframes comboReveal {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes comboPulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.combo-text {
-  color: white;
-  font-weight: bold;
-  font-size: 1.2rem;
-  position: relative;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.combo-text span {
-  font-size: 1.4rem;
-  display: inline-block;
-  margin-left: 5px;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
-}
-
-/* 连击特效 */
-.combo-effect {
-  position: absolute;
-  pointer-events: none;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
-  z-index: 100;
-  white-space: nowrap;
-  animation: comboEffect 1.5s forwards ease-out; /* 延长时间，从1.2s到1.5s */
-}
-
-@keyframes comboEffect {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 0;
-  }
-  20% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 1;
-  }
-  75% {
-    transform: translate(-50%, -70%) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -100%) scale(0.8);
-    opacity: 0;
-  }
-}
-
-/* 超级连击特效 */
-.super-combo-effect {
-  animation: superComboEffect 1.8s forwards cubic-bezier(0.11, 0.65, 0.33, 1); /* 延长时间，从1.5s到1.8s */
-  color: #ffdd00;
-  text-shadow: 0 0 10px rgba(255, 221, 0, 0.8), 0 0 20px rgba(255, 221, 0, 0.5), 0 0 30px rgba(255, 151, 0, 0.3);
-  font-size: 2.3rem; /* 改小一点，从2.5rem到2.3rem，使其与普通连击更接近 */
-}
-
-@keyframes superComboEffect {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5) rotate(-5deg);
-    opacity: 0;
-  }
-  10% {
-    transform: translate(-50%, -50%) scale(0.7) rotate(5deg);
-    opacity: 0.7;
-  }
-  30% {
-    transform: translate(-50%, -60%) scale(1.3) rotate(-3deg);
-    opacity: 1;
-  }
-  70% {
-    transform: translate(-50%, -100%) scale(1) rotate(2deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -150%) scale(0.7) rotate(0deg);
-    opacity: 0;
-  }
-}
-
 /* 连击特效容器 */
 .combo-effect-container {
   position: relative;
@@ -1016,18 +884,6 @@ body {
     height: 18px;
   }
   
-  .combo-text {
-    font-size: 1rem;
-  }
-  
-  .combo-text span {
-    font-size: 1.2rem;
-  }
-  
-  .combo-display {
-    padding: 5px 10px;
-  }
-  
   .combo-effect-container {
     height: 40px; /* 减小高度以适应小屏幕 */
     margin-bottom: 5px; /* 减小下边距 */
@@ -1198,7 +1054,7 @@ body {
   z-index: 20; /* 确保在游戏板和按钮之间 */
   text-align: center;
   border: 2px solid rgba(255, 255, 255, 0.7);
-  animation: gentleAlertNew 0.6s ease-in-out;
+  animation: gentleAlert 0.6s ease-in-out;
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   max-width: 80%;
@@ -1222,7 +1078,7 @@ body {
   animation: pawWiggle 1s ease-in-out infinite alternate;
 }
 
-@keyframes gentleAlertNew {
+@keyframes gentleAlert {
   0% {
     opacity: 0;
     transform: translateX(-50%) translateY(20px);
@@ -1244,23 +1100,4 @@ body {
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; transform: translateX(-50%) translateY(10px); }
-}
-
-@keyframes gentleAlert {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -80%);
-  }
-  40% {
-    opacity: 1;
-    transform: translate(-50%, -40%);
-  }
-  80% {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%);
-  }
 }

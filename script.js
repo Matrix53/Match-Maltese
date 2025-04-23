@@ -304,9 +304,6 @@ function checkForMatch() {
 
 // 添加得分
 function addScore() {
-  // 获取连击显示元素
-  const comboDisplay = document.getElementById('combo-display')
-  const comboCountElement = document.getElementById('combo-count')
 
   // 计算当前时间与上次匹配时间的差值（秒）
   const now = Date.now()
@@ -336,7 +333,6 @@ function addScore() {
     scoreSound.play()
   } else if (comboCount === 2) {
     // 普通连击：2连击
-    comboCountElement.textContent = comboCount
     comboMultiplier = 1.5
     showComboEffect(firstCard, secondCard, `${comboCount}连击!`)
 
@@ -344,45 +340,22 @@ function addScore() {
     comboSound.currentTime = 0
     comboSound.play()
 
-    // 显示连击条
-    comboDisplay.classList.add('active')
-    comboDisplay.classList.add('pulse')
-    comboDisplay.classList.remove('super')
-
-    // 连击条脉冲效果
-    setTimeout(() => {
-      comboDisplay.classList.remove('pulse')
-    }, 600)
   } else if (comboCount >= 3) {
     // 超级连击：3连击以上
     comboMultiplier = 2 + (comboCount - 3) * 0.5 // 递增奖励(调整基数为3)
     comboMultiplier = Math.min(comboMultiplier, 5) // 限制最大倍率为5倍
 
     // 更新连击计数显示
-    comboCountElement.textContent = comboCount
-
     showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`)
 
     // 播放超级连击音效
     superComboSound.currentTime = 0
     superComboSound.play()
-
-    // 更新连击显示样式
-    comboDisplay.classList.add('active')
-    comboDisplay.classList.add('pulse')
-    comboDisplay.classList.add('super')
-
-    setTimeout(() => {
-      comboDisplay.classList.remove('pulse')
-    }, 600)
   }
 
   // 重设连击超时计时器，延长至5秒(原来是4秒)
   if (comboTimer) clearTimeout(comboTimer)
   comboTimer = setTimeout(() => {
-    // 连击超时
-    comboDisplay.classList.remove('active')
-    comboDisplay.classList.remove('super')
     comboCount = 0
   }, 5000) // 5秒后重置连击
 
@@ -1000,7 +973,6 @@ function ensureGameLayout() {
   const gameBoard = document.querySelector('.game-board')
   const header = document.querySelector('.game-header')
   const footer = document.querySelector('.game-footer')
-  const comboDisplay = document.getElementById('combo-display')
   const comboEffectContainer = document.getElementById('combo-effect-container')
   const allButtons = document.querySelectorAll('.game-btn')
 
@@ -1063,12 +1035,6 @@ function ensureGameLayout() {
   header.style.position = 'relative'
   header.style.marginBottom = '10px'
   header.style.zIndex = '10'
-
-  // 设置连击显示和特效容器
-  if (comboDisplay) {
-    comboDisplay.style.width = '100%'
-    comboDisplay.style.maxWidth = layoutWidth
-  }
 
   if (comboEffectContainer) {
     comboEffectContainer.style.width = '100%'
@@ -1137,14 +1103,6 @@ function ensureGameLayout() {
       comboEffectContainer.style.width = '100%'
     }
 
-    if (comboDisplay) {
-      comboDisplay.style.position = 'absolute'
-      comboDisplay.style.bottom = '0'
-      comboDisplay.style.left = '50%'
-      comboDisplay.style.transform = 'translateX(-50%)'
-      comboDisplay.style.width = 'auto'
-      comboDisplay.style.minWidth = '120px'
-    }
   } else {
     // 竖屏或宽屏模式，恢复垂直布局
     if (container) {
@@ -1156,10 +1114,5 @@ function ensureGameLayout() {
     footer.style.width = '100%'
     footer.style.flexDirection = 'row'
 
-    if (comboDisplay) {
-      comboDisplay.style.position = 'relative'
-      comboDisplay.style.transform = 'none'
-      comboDisplay.style.width = '100%'
-    }
   }
 }
