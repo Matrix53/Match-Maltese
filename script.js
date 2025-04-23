@@ -273,6 +273,7 @@ function shuffle(array) {
 
 // 翻牌
 function flipCard() {
+  if (gameActive === false) return // 游戏未激活时不允许翻牌
   if (lockBoard) return
   if (this === firstCard) return
 
