@@ -133,13 +133,13 @@ function showTimeWarning() {
   const gameBoard = document.querySelector('.game-board')
   gameBoard.appendChild(alertElement)
 
-  // 轻微震动效果，降低强度
-  setTimeout(() => {
-    document.body.classList.add('light-shake')
-    setTimeout(() => {
-      document.body.classList.remove('light-shake')
-    }, 300) // 减少震动时间
-  }, 100) // 延迟一点点再震动
+  // // 轻微震动效果，降低强度
+  // setTimeout(() => {
+  //   document.body.classList.add('light-shake')
+  //   setTimeout(() => {
+  //     document.body.classList.remove('light-shake')
+  //   }, 300) // 减少震动时间
+  // }, 100) // 延迟一点点再震动
 
   // 4秒后自动淡出
   setTimeout(() => {
@@ -352,7 +352,7 @@ function addScore() {
       comboDisplay.classList.remove('pulse')
     }, 600)
   } else if (comboCount >= 3) {
-    // 超级连击：3连击以上(原来是4连击以上)
+    // 超级连击：3连击以上
     comboMultiplier = 2 + (comboCount - 3) * 0.5 // 递增奖励(调整基数为3)
     comboMultiplier = Math.min(comboMultiplier, 5) // 限制最大倍率为5倍
 
@@ -400,7 +400,7 @@ function addScore() {
     scorePopup.textContent = `+${pointsEarned} (x${comboMultiplier.toFixed(1)})`
     // 连击得分颜色特殊处理
     if (comboCount >= 3) {
-      // 从4连击改为3连击
+      // 3连击触发超级连击特效
       scorePopup.style.color = '#ff5252'
       scorePopup.style.fontSize = '1.6rem' // 改小一点，使尺寸更统一
       scorePopup.style.textShadow =
@@ -1002,14 +1002,6 @@ function ensureGameLayout() {
   if (!gameBoard || !header || !footer) return
 
   // 检测浏览器类型
-  const isEdge =
-    navigator.userAgent.indexOf('Edge') !== -1 ||
-    navigator.userAgent.indexOf('Edg') !== -1
-  const isEdgeMobile =
-    isEdge &&
-    (navigator.userAgent.indexOf('Mobile') !== -1 ||
-      navigator.userAgent.indexOf('Android') !== -1 ||
-      navigator.userAgent.indexOf('iPhone') !== -1)
   const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
   const isMobile =
     window.innerWidth <= 768 ||
