@@ -809,19 +809,51 @@ document.addEventListener('DOMContentLoaded', () => {
   saveScoreBtn.addEventListener('click', saveScore)
   shareRankBtn.addEventListener('click', shareRanking)
 
-  // 3秒后自动播放背景音乐
-  setTimeout(() => {
-    bgMusic
-      .play()
+  // 音乐播放状态标记
+  let musicStarted = false
+
+  // 尝试立即播放背景音乐
+  playBackgroundMusic();
+
+  // 如果自动播放失败，监听第一次用户交互
+  function setupUserInteractionMusic() {
+    if (musicStarted) return; // 如果音乐已经播放，不再设置交互监听
+    
+    const interactionEvents = ['click', 'touchstart', 'keydown'];
+    
+    function onFirstInteraction() {
+      if (!musicStarted && bgMusic.paused) {
+        playBackgroundMusic();
+        
+        // 如果成功播放，移除所有交互监听器
+        if (!bgMusic.paused) {
+          interactionEvents.forEach(event => {
+            document.removeEventListener(event, onFirstInteraction);
+          });
+        }
+      }
+    }
+    
+    // 添加交互监听器
+    interactionEvents.forEach(event => {
+      document.addEventListener(event, onFirstInteraction, { once: false });
+    });
+  }
+  
+  // 封装音乐播放逻辑
+  function playBackgroundMusic() {
+    bgMusic.play()
       .then(() => {
-        musicBtn.textContent = '🔊 音乐开'
-        musicBtn.classList.add('active')
+        musicStarted = true;
+        musicBtn.textContent = '🔊 音乐开';
+        musicBtn.classList.add('active');
       })
       .catch((err) => {
-        console.log('自动播放音乐失败:', err)
-        // 手机浏览器通常需要用户交互才能播放音频
-      })
-  }, 3000)
+        console.log('自动播放音乐失败:', err);
+        // 设置用户交互监听
+        setupUserInteractionMusic();
+      });
+  }
 
   // 初始显示排行榜（用于更新是否为空的状态）
   const leaderboard =
