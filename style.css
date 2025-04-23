@@ -309,7 +309,8 @@ body {
   margin-top: 15px;
   margin-bottom: 15px;
   flex: 0 0 auto;
-  position: relative;
+  position: fixed;
+  bottom: 10px;
   z-index: 10;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 15px;

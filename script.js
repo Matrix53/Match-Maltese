@@ -1099,13 +1099,6 @@ function ensureGameLayout() {
     gameBoard.style.width = `min(${boardSize}px, calc(100vw - 20px))`
     gameBoard.style.height = gameBoard.style.width
 
-    // 确保底部按钮区域始终可见
-    footer.style.position = 'fixed'
-    footer.style.bottom = '10px'
-    footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
-    footer.style.padding = '8px 5px'
-    footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)'
-
     // 重新计算其他元素宽度
     const adjustedWidth = gameBoard.offsetWidth + 'px'
     header.style.maxWidth = adjustedWidth
