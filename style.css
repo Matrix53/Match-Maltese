@@ -772,6 +772,8 @@ body {
   justify-content: center;
   align-items: center;
   perspective: 600px;
+  overflow: hidden; /* 防止内容溢出影响布局 */
+  contain: layout paint size; /* 使用contain属性隔离元素影响 */
 }
 
 /* 连击特效（现在放在专门的容器中） */
@@ -789,6 +791,12 @@ body {
   width: 100%;
   animation: comboEffectDisplay 1.5s forwards ease-out; /* 延长时间，从1.2s到1.5s */
   z-index: 100;
+  left: 0; /* 确保绝对定位元素不会影响布局 */
+  top: 0; /* 固定在容器顶部 */
+  height: 100%; /* 使用100%高度充满父容器 */
+  display: flex; /* 使用flex布局以便更好地居中内容 */
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes comboEffectDisplay {
@@ -976,7 +984,6 @@ body {
     font-size: 0.85rem; /* 更小的字体大小 */
     margin: 3px; /* 更小的按钮间距 */
     display: inline-block !important; /* 再次强制显示 */
-    visibility: visible !important; /* 再次强制可见 */
   }
 
   .modal-content {
@@ -1022,7 +1029,10 @@ body {
   }
   
   .combo-effect-container {
-    height: 50px;
+    height: 40px; /* 减小高度以适应小屏幕 */
+    margin-bottom: 5px; /* 减小下边距 */
+    position: absolute; /* 防止影响文档流 */
+    pointer-events: none; /* 确保不会拦截点击事件 */
   }
   
   .combo-effect-display {
