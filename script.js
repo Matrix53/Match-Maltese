@@ -73,7 +73,7 @@ function initGame() {
 
   // 更新显示
   scoreElement.textContent = score
-  timeElement.textContent = timeElapsed
+  timeElement.textContent = TIME_LIMIT - timeElapsed
 
   // 清空游戏板
   gameBoard.innerHTML = ''
@@ -84,7 +84,7 @@ function initGame() {
   // 启动计时器
   gameTimer = setInterval(() => {
     timeElapsed++
-    timeElement.textContent = timeElapsed
+    timeElement.textContent = TIME_LIMIT - timeElapsed
 
     // 检查剩余时间并添加视觉警告
     const timeLeft = TIME_LIMIT - timeElapsed
