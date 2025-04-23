@@ -998,7 +998,6 @@ function ensureGameLayout() {
     
     footer.style.width = '30%'
     footer.style.maxWidth = '200px'
-    footer.style.marginLeft = '10px'
     footer.style.flexDirection = 'column'
     
     // 调整连击显示器
