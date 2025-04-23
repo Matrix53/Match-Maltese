@@ -568,18 +568,18 @@ function showSimpleMatchEffect(card1, card2, text) {
   effect.style.color = '#ff9c52' // 使用柔和的橙色
 
   // 添加小型冲击波特效
-  const shockwave = document.createElement('div')
-  shockwave.classList.add('combo-shockwave')
-  shockwave.style.position = 'absolute'
-  shockwave.style.top = '50%'
-  shockwave.style.left = '50%'
-  shockwave.style.transform = 'translate(-50%, -50%)'
-  shockwave.style.backgroundColor = 'rgba(255, 156, 82, 0.08)' // 更轻微的冲击波
-  shockwave.style.animation = 'shockwaveEffect 0.7s ease-out forwards' // 稍快的动画
+  // const shockwave = document.createElement('div')
+  // shockwave.classList.add('combo-shockwave')
+  // shockwave.style.position = 'absolute'
+  // shockwave.style.top = '50%'
+  // shockwave.style.left = '50%'
+  // shockwave.style.transform = 'translate(-50%, -50%)'
+  // shockwave.style.backgroundColor = 'rgba(255, 156, 82, 0.08)' // 更轻微的冲击波
+  // shockwave.style.animation = 'shockwaveEffect 0.7s ease-out forwards' // 稍快的动画
 
   // 添加特效到容器
   comboEffectContainer.appendChild(effect)
-  comboEffectContainer.appendChild(shockwave)
+  // comboEffectContainer.appendChild(shockwave)
 
   // 动画结束后移除元素
   effect.addEventListener('animationend', function () {
@@ -588,11 +588,11 @@ function showSimpleMatchEffect(card1, card2, text) {
     }
   })
 
-  shockwave.addEventListener('animationend', function () {
-    if (comboEffectContainer.contains(shockwave)) {
-      comboEffectContainer.removeChild(shockwave)
-    }
-  })
+  // shockwave.addEventListener('animationend', function () {
+  //   if (comboEffectContainer.contains(shockwave)) {
+  //     comboEffectContainer.removeChild(shockwave)
+  //   }
+  // })
 }
 
 // 添加冲击波特效
