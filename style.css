@@ -73,7 +73,7 @@ body {
   padding: 15px 10px;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   position: relative;
 }
@@ -301,7 +301,7 @@ body {
 .game-footer {
   width: 100%;
   max-width: min(85vw, min(85vh - 200px, 500px));
-  display: flex !important;
+  display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
