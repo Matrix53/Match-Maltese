@@ -1026,7 +1026,6 @@ function ensureGameLayout() {
     header.style.width = '100%'
     
     footer.style.width = '100%'
-    footer.style.marginLeft = '0'
     footer.style.flexDirection = 'row'
     
     if (comboDisplay) {
