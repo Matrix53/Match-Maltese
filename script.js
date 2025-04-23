@@ -1091,22 +1091,7 @@ function ensureGameLayout() {
   footer.style.zIndex = '10'
 
   // 特定浏览器兼容性调整
-  if (isEdgeMobile) {
-    // Edge移动版特殊处理
-    container.style.padding = '15px 5px 70px 5px'
-
-    // 调整游戏板大小以适应小屏幕边缘
-    gameBoard.style.width = `min(${boardSize}px, calc(100vw - 20px))`
-    gameBoard.style.height = gameBoard.style.width
-
-    // 重新计算其他元素宽度
-    const adjustedWidth = gameBoard.offsetWidth + 'px'
-    header.style.maxWidth = adjustedWidth
-    if (comboDisplay) comboDisplay.style.maxWidth = adjustedWidth
-    if (comboEffectContainer)
-      comboEffectContainer.style.maxWidth = adjustedWidth
-    footer.style.maxWidth = adjustedWidth
-  } else if (isFirefox && isMobile) {
+  if (isFirefox && isMobile) {
     // Firefox移动版特殊处理
     gameBoard.style.margin = '10px auto'
 
