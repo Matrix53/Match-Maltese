@@ -561,7 +561,7 @@ function showSimpleMatchEffect(card1, card2, text) {
 
   // 创建简单匹配特效元素（样式比普通连击稍微小一些）
   const effect = document.createElement('div')
-  // effect.classList.add('combo-effect-display')
+  effect.classList.add('combo-effect-display')
   effect.textContent = text
   effect.style.fontSize = '1.8rem' // 比连击稍小
   effect.style.opacity = '0.85' // 稍微透明一点
