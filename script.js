@@ -53,7 +53,7 @@ function initGame() {
   clearInterval(gameTimer)
   clearInterval(scoreTimer)
   if (comboTimer) clearTimeout(comboTimer)
-  
+
   cards = []
   score = 0
   timeElapsed = 0
@@ -85,27 +85,27 @@ function initGame() {
   gameTimer = setInterval(() => {
     timeElapsed++
     timeElement.textContent = timeElapsed
-    
+
     // 检查剩余时间并添加视觉警告
     const timeLeft = TIME_LIMIT - timeElapsed
-    
+
     // 游戏失败检查
     if (timeLeft <= 0 && gameActive) {
       gameOver()
       return
     }
-    
+
     // 显示30秒警告
     if (timeLeft === TIME_WARNING && !timeWarningShown) {
       showTimeWarning()
       timeWarningShown = true
     }
-    
+
     // 剩余时间少于30秒，添加警告效果
     if (timeLeft <= TIME_WARNING && timeLeft > 10) {
       timeElement.classList.add('time-warning')
       timeElement.classList.remove('time-critical')
-    } 
+    }
     // 剩余时间少于10秒，添加危急效果
     else if (timeLeft <= 10) {
       timeElement.classList.remove('time-warning')
@@ -123,60 +123,60 @@ function initGame() {
 
 // 显示时间警告
 function showTimeWarning() {
-  const alertElement = document.createElement('div');
-  alertElement.classList.add('time-alert');
-  
+  const alertElement = document.createElement('div')
+  alertElement.classList.add('time-alert')
+
   // 使用更友好的提示文本
-  alertElement.textContent = `还剩${TIME_WARNING}秒哦`;
-  
+  alertElement.textContent = `还剩${TIME_WARNING}秒哦`
+
   // 将提示放在游戏板元素内部的底部位置
-  const gameBoard = document.querySelector('.game-board');
-  gameBoard.appendChild(alertElement);
-  
+  const gameBoard = document.querySelector('.game-board')
+  gameBoard.appendChild(alertElement)
+
   // 轻微震动效果，降低强度
   setTimeout(() => {
-    document.body.classList.add('light-shake');
+    document.body.classList.add('light-shake')
     setTimeout(() => {
-      document.body.classList.remove('light-shake');
-    }, 300); // 减少震动时间
-  }, 100); // 延迟一点点再震动
-  
+      document.body.classList.remove('light-shake')
+    }, 300) // 减少震动时间
+  }, 100) // 延迟一点点再震动
+
   // 4秒后自动淡出
   setTimeout(() => {
     if (gameBoard.contains(alertElement)) {
-      alertElement.style.animation = 'fadeOut 0.8s forwards';
-      
+      alertElement.style.animation = 'fadeOut 0.8s forwards'
+
       // 动画结束后再移除元素
       setTimeout(() => {
         if (gameBoard.contains(alertElement)) {
-          gameBoard.removeChild(alertElement);
+          gameBoard.removeChild(alertElement)
         }
-      }, 800);
+      }, 800)
     }
-  }, 4000);
+  }, 4000)
 }
 
 // 为时间警告添加淡出动画
-const fadeOutStyle = document.createElement('style');
+const fadeOutStyle = document.createElement('style')
 fadeOutStyle.textContent = `
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; transform: translate(-50%, -60%); }
-}`;
-document.head.appendChild(fadeOutStyle);
+}`
+document.head.appendChild(fadeOutStyle)
 
 // 游戏失败处理
 function gameOver() {
   clearInterval(gameTimer)
   clearInterval(scoreTimer)
   gameActive = false
-  
+
   // 播放失败音效
   failSound.play()
-  
+
   // 显示失败模态框
   failModal.style.display = 'flex'
-  
+
   // 解锁游戏板，防止卡在锁定状态
   lockBoard = false
 }
@@ -184,7 +184,7 @@ function gameOver() {
 // 创建卡片
 function createCards() {
   // 随机选择8种图片
-  const availableCards = Array.from({ length: 145 }, (_, i) => i)
+  const availableCards = Array.from({ length: 235 }, (_, i) => i)
   const selectedCards = []
 
   while (selectedCards.length < 8) {
@@ -303,338 +303,343 @@ function checkForMatch() {
 // 添加得分
 function addScore() {
   // 获取连击显示元素
-  const comboDisplay = document.getElementById('combo-display');
-  const comboCountElement = document.getElementById('combo-count');
-  
+  const comboDisplay = document.getElementById('combo-display')
+  const comboCountElement = document.getElementById('combo-count')
+
   // 计算当前时间与上次匹配时间的差值（秒）
-  const now = Date.now();
-  const timeDiff = (now - lastMatchTime) / 1000;
-  
+  const now = Date.now()
+  const timeDiff = (now - lastMatchTime) / 1000
+
   // 如果是首次匹配或连击计时器已经超过限制，重置连击
   if (lastMatchTime === 0 || timeDiff > 4) {
-    comboCount = 0;
+    comboCount = 0
   }
-  
+
   // 更新上次匹配时间
-  lastMatchTime = now;
-  
+  lastMatchTime = now
+
   // 增加连击计数
-  comboCount++;
-  
+  comboCount++
+
   // 连击奖励系数
-  let comboMultiplier = 1;
-  
+  let comboMultiplier = 1
+
   // 根据连击数更新显示和奖励系数
   if (comboCount === 1) {
     // 单次匹配也显示简单特效，增加打击感
-    showSimpleMatchEffect(firstCard, secondCard, "匹配!");
-    
+    showSimpleMatchEffect(firstCard, secondCard, '匹配!')
+
     // 播放普通得分音效
-    scoreSound.currentTime = 0;
-    scoreSound.play();
+    scoreSound.currentTime = 0
+    scoreSound.play()
   } else if (comboCount === 2) {
     // 普通连击：2连击
-    comboCountElement.textContent = comboCount;
-    comboMultiplier = 1.5;
-    showComboEffect(firstCard, secondCard, `${comboCount}连击!`);
-    
+    comboCountElement.textContent = comboCount
+    comboMultiplier = 1.5
+    showComboEffect(firstCard, secondCard, `${comboCount}连击!`)
+
     // 播放连击音效
-    comboSound.currentTime = 0;
-    comboSound.play();
-    
+    comboSound.currentTime = 0
+    comboSound.play()
+
     // 显示连击条
-    comboDisplay.classList.add('active');
-    comboDisplay.classList.add('pulse');
-    comboDisplay.classList.remove('super');
-    
+    comboDisplay.classList.add('active')
+    comboDisplay.classList.add('pulse')
+    comboDisplay.classList.remove('super')
+
     // 连击条脉冲效果
     setTimeout(() => {
-      comboDisplay.classList.remove('pulse');
-    }, 600);
+      comboDisplay.classList.remove('pulse')
+    }, 600)
   } else if (comboCount >= 3) {
     // 超级连击：3连击以上(原来是4连击以上)
-    comboMultiplier = 2 + (comboCount - 3) * 0.5; // 递增奖励(调整基数为3)
-    comboMultiplier = Math.min(comboMultiplier, 5); // 限制最大倍率为5倍
-    
+    comboMultiplier = 2 + (comboCount - 3) * 0.5 // 递增奖励(调整基数为3)
+    comboMultiplier = Math.min(comboMultiplier, 5) // 限制最大倍率为5倍
+
     // 更新连击计数显示
-    comboCountElement.textContent = comboCount;
-    
-    showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`);
-    
+    comboCountElement.textContent = comboCount
+
+    showSuperComboEffect(firstCard, secondCard, `超级${comboCount}连击!`)
+
     // 播放超级连击音效
-    superComboSound.currentTime = 0;
-    superComboSound.play();
-    
+    superComboSound.currentTime = 0
+    superComboSound.play()
+
     // 更新连击显示样式
-    comboDisplay.classList.add('active');
-    comboDisplay.classList.add('pulse');
-    comboDisplay.classList.add('super');
-    
+    comboDisplay.classList.add('active')
+    comboDisplay.classList.add('pulse')
+    comboDisplay.classList.add('super')
+
     setTimeout(() => {
-      comboDisplay.classList.remove('pulse');
-    }, 600);
+      comboDisplay.classList.remove('pulse')
+    }, 600)
   }
-  
+
   // 重设连击超时计时器，延长至5秒(原来是4秒)
-  if (comboTimer) clearTimeout(comboTimer);
+  if (comboTimer) clearTimeout(comboTimer)
   comboTimer = setTimeout(() => {
     // 连击超时
-    comboDisplay.classList.remove('active');
-    comboDisplay.classList.remove('super');
-    comboCount = 0;
-  }, 5000); // 5秒后重置连击
-  
+    comboDisplay.classList.remove('active')
+    comboDisplay.classList.remove('super')
+    comboCount = 0
+  }, 5000) // 5秒后重置连击
+
   // 计算本次得分（基础分数 * 连击系数）
-  const pointsEarned = Math.round(currentPotentialScore * comboMultiplier);
-  
+  const pointsEarned = Math.round(currentPotentialScore * comboMultiplier)
+
   // 添加得分
-  score += pointsEarned;
-  scoreElement.textContent = score;
+  score += pointsEarned
+  scoreElement.textContent = score
 
   // 显示加分动画
-  const scorePopup = document.createElement('div');
-  scorePopup.classList.add('score-popup');
-  
+  const scorePopup = document.createElement('div')
+  scorePopup.classList.add('score-popup')
+
   // 如果是连击，显示倍率
   if (comboCount > 1) {
-    scorePopup.textContent = `+${pointsEarned} (x${comboMultiplier.toFixed(1)})`;
+    scorePopup.textContent = `+${pointsEarned} (x${comboMultiplier.toFixed(1)})`
     // 连击得分颜色特殊处理
-    if (comboCount >= 3) { // 从4连击改为3连击
-      scorePopup.style.color = '#ff5252';
-      scorePopup.style.fontSize = '1.6rem'; // 改小一点，使尺寸更统一
-      scorePopup.style.textShadow = '2px 2px 0 white, 0 0 10px rgba(255, 82, 82, 0.7)';
+    if (comboCount >= 3) {
+      // 从4连击改为3连击
+      scorePopup.style.color = '#ff5252'
+      scorePopup.style.fontSize = '1.6rem' // 改小一点，使尺寸更统一
+      scorePopup.style.textShadow =
+        '2px 2px 0 white, 0 0 10px rgba(255, 82, 82, 0.7)'
     } else {
-      scorePopup.style.color = '#ff7730';
-      scorePopup.style.fontSize = '1.5rem'; // 调整为更接近的大小
+      scorePopup.style.color = '#ff7730'
+      scorePopup.style.fontSize = '1.5rem' // 调整为更接近的大小
     }
   } else {
-    scorePopup.textContent = `+${pointsEarned}`;
-    scorePopup.style.fontSize = '1.4rem'; // 增大单次匹配的字号，提升视觉反馈
+    scorePopup.textContent = `+${pointsEarned}`
+    scorePopup.style.fontSize = '1.4rem' // 增大单次匹配的字号，提升视觉反馈
   }
 
   // 计算加分动画位置（两张卡片中间）
-  const firstRect = firstCard.getBoundingClientRect();
-  const secondRect = secondCard.getBoundingClientRect();
-  const x = (firstRect.left + secondRect.left) / 2 + firstRect.width / 2;
-  const y = (firstRect.top + secondRect.top) / 2 + firstRect.height / 2;
+  const firstRect = firstCard.getBoundingClientRect()
+  const secondRect = secondCard.getBoundingClientRect()
+  const x = (firstRect.left + secondRect.left) / 2 + firstRect.width / 2
+  const y = (firstRect.top + secondRect.top) / 2 + firstRect.height / 2
 
-  scorePopup.style.left = `${x - gameBoard.getBoundingClientRect().left}px`;
-  scorePopup.style.top = `${y - gameBoard.getBoundingClientRect().top}px`;
+  scorePopup.style.left = `${x - gameBoard.getBoundingClientRect().left}px`
+  scorePopup.style.top = `${y - gameBoard.getBoundingClientRect().top}px`
 
-  gameBoard.appendChild(scorePopup);
+  gameBoard.appendChild(scorePopup)
 
   // 卡片匹配动画
-  firstCard.classList.add('matched');
-  secondCard.classList.add('matched');
+  firstCard.classList.add('matched')
+  secondCard.classList.add('matched')
 
   // 清除动画元素 - 延长时间为2000ms (原来是1500ms)
   setTimeout(() => {
     if (gameBoard.contains(scorePopup)) {
-      gameBoard.removeChild(scorePopup);
+      gameBoard.removeChild(scorePopup)
     }
-  }, 2000);
+  }, 2000)
 
   // 重置当前分数计算器
-  currentPotentialScore = 200;
+  currentPotentialScore = 200
 
   // 检查游戏是否结束
-  matchedPairs++;
+  matchedPairs++
   if (matchedPairs === 8) {
     setTimeout(() => {
-      endGame();
-    }, 1000);
+      endGame()
+    }, 1000)
   }
 }
 
 // 显示连击特效
 function showComboEffect(card1, card2, text) {
   // 获取连击特效容器
-  const comboEffectContainer = document.getElementById('combo-effect-container');
-  
+  const comboEffectContainer = document.getElementById('combo-effect-container')
+
   // 创建连击特效元素
-  const effect = document.createElement('div');
-  effect.classList.add('combo-effect-display');
-  effect.textContent = text;
-  effect.style.color = '#ff7730'; // 橙色，比单次匹配更鲜艳
-  effect.style.fontSize = '2.0rem'; // 比单次匹配更大
-  effect.style.textShadow = '0 0 10px rgba(255, 119, 48, 0.8), 0 0 20px rgba(255, 119, 48, 0.5)';
-  
+  const effect = document.createElement('div')
+  effect.classList.add('combo-effect-display')
+  effect.textContent = text
+  effect.style.color = '#ff7730' // 橙色，比单次匹配更鲜艳
+  effect.style.fontSize = '2.0rem' // 比单次匹配更大
+  effect.style.textShadow =
+    '0 0 10px rgba(255, 119, 48, 0.8), 0 0 20px rgba(255, 119, 48, 0.5)'
+
   // 添加中型冲击波特效 (比单次匹配更强)
-  const shockwave = document.createElement('div');
-  shockwave.classList.add('combo-shockwave');
-  shockwave.style.position = 'absolute';
-  shockwave.style.top = '50%';
-  shockwave.style.left = '50%';
-  shockwave.style.transform = 'translate(-50%, -50%)';
-  shockwave.style.backgroundColor = 'rgba(255, 119, 48, 0.15)'; // 更强的冲击波
-  shockwave.style.boxShadow = '0 0 30px rgba(255, 119, 48, 0.3), inset 0 0 15px rgba(255, 119, 48, 0.2)';
-  shockwave.style.animation = 'shockwaveEffect 1.0s ease-out forwards'; // 比单次匹配更慢，更持久
-  
+  const shockwave = document.createElement('div')
+  shockwave.classList.add('combo-shockwave')
+  shockwave.style.position = 'absolute'
+  shockwave.style.top = '50%'
+  shockwave.style.left = '50%'
+  shockwave.style.transform = 'translate(-50%, -50%)'
+  shockwave.style.backgroundColor = 'rgba(255, 119, 48, 0.15)' // 更强的冲击波
+  shockwave.style.boxShadow =
+    '0 0 30px rgba(255, 119, 48, 0.3), inset 0 0 15px rgba(255, 119, 48, 0.2)'
+  shockwave.style.animation = 'shockwaveEffect 1.0s ease-out forwards' // 比单次匹配更慢，更持久
+
   // 添加轻微震动效果 (2连击比单次匹配增加轻微震动)
-  document.body.classList.add('light-shake');
+  document.body.classList.add('light-shake')
   setTimeout(() => {
-    document.body.classList.remove('light-shake');
-  }, 300);
-  
+    document.body.classList.remove('light-shake')
+  }, 300)
+
   // 添加特效到容器
-  comboEffectContainer.appendChild(effect);
-  comboEffectContainer.appendChild(shockwave);
-  
+  comboEffectContainer.appendChild(effect)
+  comboEffectContainer.appendChild(shockwave)
+
   // 动画结束后移除元素
-  effect.addEventListener('animationend', function() {
+  effect.addEventListener('animationend', function () {
     if (comboEffectContainer.contains(effect)) {
-      comboEffectContainer.removeChild(effect);
+      comboEffectContainer.removeChild(effect)
     }
-  });
-  
-  shockwave.addEventListener('animationend', function() {
+  })
+
+  shockwave.addEventListener('animationend', function () {
     if (comboEffectContainer.contains(shockwave)) {
-      comboEffectContainer.removeChild(shockwave);
+      comboEffectContainer.removeChild(shockwave)
     }
-  });
+  })
 }
 
 // 显示超级连击特效
 function showSuperComboEffect(card1, card2, text) {
   // 获取连击特效容器
-  const comboEffectContainer = document.getElementById('combo-effect-container');
-  
+  const comboEffectContainer = document.getElementById('combo-effect-container')
+
   // 创建超级连击特效元素
-  const effect = document.createElement('div');
-  effect.classList.add('combo-effect-display', 'super-combo-effect-display');
-  effect.textContent = text;
-  
+  const effect = document.createElement('div')
+  effect.classList.add('combo-effect-display', 'super-combo-effect-display')
+  effect.textContent = text
+
   // 根据连击数调整特效强度
   if (comboCount >= 5) {
     // 5连击以上，更强烈的效果
-    effect.style.fontSize = '2.7rem';
-    effect.style.textShadow = '0 0 15px rgba(255, 221, 0, 0.9), 0 0 30px rgba(255, 221, 0, 0.7), 0 0 40px rgba(255, 151, 0, 0.5), 0 0 3px #ff5252';
-    
+    effect.style.fontSize = '2.7rem'
+    effect.style.textShadow =
+      '0 0 15px rgba(255, 221, 0, 0.9), 0 0 30px rgba(255, 221, 0, 0.7), 0 0 40px rgba(255, 151, 0, 0.5), 0 0 3px #ff5252'
+
     // 增加额外的发光效果
-    effect.style.filter = 'brightness(1.2)';
-    
+    effect.style.filter = 'brightness(1.2)'
+
     // 添加更强烈的震动效果
-    document.body.classList.add('shake');
+    document.body.classList.add('shake')
     setTimeout(() => {
-      document.body.classList.remove('shake');
-    }, 600);
-    
+      document.body.classList.remove('shake')
+    }, 600)
+
     // 添加双层冲击波特效
-    addSuperShockwave(comboEffectContainer);
+    addSuperShockwave(comboEffectContainer)
     setTimeout(() => {
-      addSuperShockwave(comboEffectContainer);
-    }, 200);
+      addSuperShockwave(comboEffectContainer)
+    }, 200)
   } else {
     // 3-4连击，标准超级连击效果
-    document.body.classList.add('shake');
+    document.body.classList.add('shake')
     setTimeout(() => {
-      document.body.classList.remove('shake');
-    }, 500);
-    
+      document.body.classList.remove('shake')
+    }, 500)
+
     // 添加标准超级冲击波特效
-    addSuperShockwave(comboEffectContainer);
+    addSuperShockwave(comboEffectContainer)
   }
-  
+
   // 添加到特效容器
-  comboEffectContainer.appendChild(effect);
-  
+  comboEffectContainer.appendChild(effect)
+
   // 动画结束后移除元素
-  effect.addEventListener('animationend', function() {
+  effect.addEventListener('animationend', function () {
     if (comboEffectContainer.contains(effect)) {
-      comboEffectContainer.removeChild(effect);
+      comboEffectContainer.removeChild(effect)
     }
-  });
+  })
 }
 
 // 显示简单匹配特效 (新增函数，用于单次匹配)
 function showSimpleMatchEffect(card1, card2, text) {
   // 获取连击特效容器
-  const comboEffectContainer = document.getElementById('combo-effect-container');
-  
+  const comboEffectContainer = document.getElementById('combo-effect-container')
+
   // 创建简单匹配特效元素（样式比普通连击稍微小一些）
-  const effect = document.createElement('div');
-  effect.classList.add('combo-effect-display');
-  effect.textContent = text;
-  effect.style.fontSize = '1.8rem'; // 比连击稍小
-  effect.style.opacity = '0.85'; // 稍微透明一点
-  effect.style.color = '#ff9c52'; // 使用柔和的橙色
-  
+  const effect = document.createElement('div')
+  effect.classList.add('combo-effect-display')
+  effect.textContent = text
+  effect.style.fontSize = '1.8rem' // 比连击稍小
+  effect.style.opacity = '0.85' // 稍微透明一点
+  effect.style.color = '#ff9c52' // 使用柔和的橙色
+
   // 添加小型冲击波特效
-  const shockwave = document.createElement('div');
-  shockwave.classList.add('combo-shockwave');
-  shockwave.style.position = 'absolute';
-  shockwave.style.top = '50%';
-  shockwave.style.left = '50%';
-  shockwave.style.transform = 'translate(-50%, -50%)';
-  shockwave.style.backgroundColor = 'rgba(255, 156, 82, 0.08)'; // 更轻微的冲击波
-  shockwave.style.animation = 'shockwaveEffect 0.7s ease-out forwards'; // 稍快的动画
-  
+  const shockwave = document.createElement('div')
+  shockwave.classList.add('combo-shockwave')
+  shockwave.style.position = 'absolute'
+  shockwave.style.top = '50%'
+  shockwave.style.left = '50%'
+  shockwave.style.transform = 'translate(-50%, -50%)'
+  shockwave.style.backgroundColor = 'rgba(255, 156, 82, 0.08)' // 更轻微的冲击波
+  shockwave.style.animation = 'shockwaveEffect 0.7s ease-out forwards' // 稍快的动画
+
   // 添加特效到容器
-  comboEffectContainer.appendChild(effect);
-  comboEffectContainer.appendChild(shockwave);
-  
+  comboEffectContainer.appendChild(effect)
+  comboEffectContainer.appendChild(shockwave)
+
   // 动画结束后移除元素
-  effect.addEventListener('animationend', function() {
+  effect.addEventListener('animationend', function () {
     if (comboEffectContainer.contains(effect)) {
-      comboEffectContainer.removeChild(effect);
+      comboEffectContainer.removeChild(effect)
     }
-  });
-  
-  shockwave.addEventListener('animationend', function() {
+  })
+
+  shockwave.addEventListener('animationend', function () {
     if (comboEffectContainer.contains(shockwave)) {
-      comboEffectContainer.removeChild(shockwave);
+      comboEffectContainer.removeChild(shockwave)
     }
-  });
+  })
 }
 
 // 添加冲击波特效
 function addShockwave(container, isSuper) {
   // 创建冲击波元素
-  const shockwave = document.createElement('div');
-  shockwave.classList.add('combo-shockwave');
-  
+  const shockwave = document.createElement('div')
+  shockwave.classList.add('combo-shockwave')
+
   if (isSuper) {
-    shockwave.classList.add('super-combo-shockwave');
+    shockwave.classList.add('super-combo-shockwave')
   }
-  
+
   // 设置冲击波位置（居中）
-  shockwave.style.position = 'absolute';
-  shockwave.style.top = '50%';
-  shockwave.style.left = '50%';
-  shockwave.style.transform = 'translate(-50%, -50%)';
-  
+  shockwave.style.position = 'absolute'
+  shockwave.style.top = '50%'
+  shockwave.style.left = '50%'
+  shockwave.style.transform = 'translate(-50%, -50%)'
+
   // 添加到容器
-  container.appendChild(shockwave);
-  
+  container.appendChild(shockwave)
+
   // 动画结束后移除
-  shockwave.addEventListener('animationend', function() {
+  shockwave.addEventListener('animationend', function () {
     if (container.contains(shockwave)) {
-      container.removeChild(shockwave);
+      container.removeChild(shockwave)
     }
-  });
+  })
 }
 
 // 添加超级冲击波特效 (新增函数，更强的震撼效果)
 function addSuperShockwave(container) {
   // 创建冲击波元素
-  const shockwave = document.createElement('div');
-  shockwave.classList.add('combo-shockwave', 'super-combo-shockwave');
-  
+  const shockwave = document.createElement('div')
+  shockwave.classList.add('combo-shockwave', 'super-combo-shockwave')
+
   // 设置冲击波位置（居中）
-  shockwave.style.position = 'absolute';
-  shockwave.style.top = '50%';
-  shockwave.style.left = '50%';
-  shockwave.style.transform = 'translate(-50%, -50%)';
-  
+  shockwave.style.position = 'absolute'
+  shockwave.style.top = '50%'
+  shockwave.style.left = '50%'
+  shockwave.style.transform = 'translate(-50%, -50%)'
+
   // 添加到容器
-  container.appendChild(shockwave);
-  
+  container.appendChild(shockwave)
+
   // 动画结束后移除
-  shockwave.addEventListener('animationend', function() {
+  shockwave.addEventListener('animationend', function () {
     if (container.contains(shockwave)) {
-      container.removeChild(shockwave);
+      container.removeChild(shockwave)
     }
-  });
+  })
 }
 
 // 禁用已匹配的卡片
@@ -909,12 +914,12 @@ document.addEventListener('DOMContentLoaded', () => {
   )
   saveScoreBtn.addEventListener('click', saveScore)
   shareRankBtn.addEventListener('click', shareRanking)
-  
+
   // 失败模态框按钮事件
   closeFailBtn.addEventListener('click', () => {
     failModal.style.display = 'none'
   })
-  
+
   retryBtn.addEventListener('click', () => {
     failModal.style.display = 'none'
     initGame()
@@ -924,46 +929,47 @@ document.addEventListener('DOMContentLoaded', () => {
   let musicStarted = false
 
   // 尝试立即播放背景音乐
-  playBackgroundMusic();
+  playBackgroundMusic()
 
   // 如果自动播放失败，监听第一次用户交互
   function setupUserInteractionMusic() {
-    if (musicStarted) return; // 如果音乐已经播放，不再设置交互监听
-    
-    const interactionEvents = ['click', 'touchstart', 'keydown'];
-    
+    if (musicStarted) return // 如果音乐已经播放，不再设置交互监听
+
+    const interactionEvents = ['click', 'touchstart', 'keydown']
+
     function onFirstInteraction() {
       if (!musicStarted && bgMusic.paused) {
-        playBackgroundMusic();
-        
+        playBackgroundMusic()
+
         // 如果成功播放，移除所有交互监听器
         if (!bgMusic.paused) {
-          interactionEvents.forEach(event => {
-            document.removeEventListener(event, onFirstInteraction);
-          });
+          interactionEvents.forEach((event) => {
+            document.removeEventListener(event, onFirstInteraction)
+          })
         }
       }
     }
-    
+
     // 添加交互监听器
-    interactionEvents.forEach(event => {
-      document.addEventListener(event, onFirstInteraction, { once: false });
-    });
+    interactionEvents.forEach((event) => {
+      document.addEventListener(event, onFirstInteraction, { once: false })
+    })
   }
-  
+
   // 封装音乐播放逻辑
   function playBackgroundMusic() {
-    bgMusic.play()
+    bgMusic
+      .play()
       .then(() => {
-        musicStarted = true;
-        musicBtn.textContent = '🔊 音乐开';
-        musicBtn.classList.add('active');
+        musicStarted = true
+        musicBtn.textContent = '🔊 音乐开'
+        musicBtn.classList.add('active')
       })
       .catch((err) => {
-        console.log('自动播放音乐失败:', err);
+        console.log('自动播放音乐失败:', err)
         // 设置用户交互监听
-        setupUserInteractionMusic();
-      });
+        setupUserInteractionMusic()
+      })
   }
 
   // 初始显示排行榜（用于更新是否为空的状态）
@@ -992,37 +998,41 @@ function ensureGameLayout() {
   const comboDisplay = document.getElementById('combo-display')
   const comboEffectContainer = document.getElementById('combo-effect-container')
   const allButtons = document.querySelectorAll('.game-btn')
-  
+
   if (!gameBoard || !header || !footer) return
-  
+
   // 检测浏览器类型
-  const isEdge = navigator.userAgent.indexOf('Edge') !== -1 || 
-                navigator.userAgent.indexOf('Edg') !== -1
-  const isEdgeMobile = isEdge && (
-    navigator.userAgent.indexOf('Mobile') !== -1 ||
-    navigator.userAgent.indexOf('Android') !== -1 ||
-    navigator.userAgent.indexOf('iPhone') !== -1
-  )
+  const isEdge =
+    navigator.userAgent.indexOf('Edge') !== -1 ||
+    navigator.userAgent.indexOf('Edg') !== -1
+  const isEdgeMobile =
+    isEdge &&
+    (navigator.userAgent.indexOf('Mobile') !== -1 ||
+      navigator.userAgent.indexOf('Android') !== -1 ||
+      navigator.userAgent.indexOf('iPhone') !== -1)
   const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
-  const isMobile = window.innerWidth <= 768 || 
-                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  
+  const isMobile =
+    window.innerWidth <= 768 ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+
   // 确保按钮在所有平台上可见
-  allButtons.forEach(button => {
+  allButtons.forEach((button) => {
     button.style.display = 'inline-block'
     button.style.visibility = 'visible'
     button.style.opacity = '1'
-    
+
     // 添加触摸事件监听器以确保在移动设备上有响应
     if (!button._touchListenerAdded) {
-      button.addEventListener('touchstart', function(e) {
+      button.addEventListener('touchstart', function (e) {
         e.preventDefault()
         setTimeout(() => this.click(), 0)
       })
       button._touchListenerAdded = true
     }
   })
-  
+
   // 设置基础容器样式
   if (container) {
     container.style.display = 'flex'
@@ -1033,36 +1043,36 @@ function ensureGameLayout() {
     container.style.minHeight = '100vh'
     container.style.padding = isMobile ? '10px 5px' : '15px 10px'
   }
-  
+
   // 设置游戏板样式 - 保持为正方形
   const boardSize = Math.min(
     window.innerWidth * 0.85,
     window.innerHeight * 0.6,
-    500  // 最大尺寸
+    500 // 最大尺寸
   )
-  
+
   gameBoard.style.width = `${boardSize}px`
   gameBoard.style.height = `${boardSize}px`
   gameBoard.style.position = 'relative'
   gameBoard.style.margin = '0 auto'
   gameBoard.style.flexShrink = '0'
-  
+
   // 统一顶部、底部和连击显示区域的宽度与游戏板一致
   const layoutWidth = `${boardSize}px`
-  
+
   // 设置顶部信息栏样式
   header.style.width = '100%'
   header.style.maxWidth = layoutWidth
   header.style.position = 'relative'
   header.style.marginBottom = '10px'
   header.style.zIndex = '10'
-  
+
   // 设置连击显示和特效容器
   if (comboDisplay) {
     comboDisplay.style.width = '100%'
     comboDisplay.style.maxWidth = layoutWidth
   }
-  
+
   if (comboEffectContainer) {
     comboEffectContainer.style.width = '100%'
     comboEffectContainer.style.maxWidth = layoutWidth
@@ -1070,7 +1080,7 @@ function ensureGameLayout() {
     comboEffectContainer.style.height = '60px'
     comboEffectContainer.style.marginBottom = '10px'
   }
-  
+
   // 设置底部按钮区域样式
   footer.style.width = '100%'
   footer.style.maxWidth = layoutWidth
@@ -1079,70 +1089,71 @@ function ensureGameLayout() {
   footer.style.flexWrap = 'wrap'
   footer.style.marginTop = '15px'
   footer.style.zIndex = '10'
-  
+
   // 特定浏览器兼容性调整
   if (isEdgeMobile) {
     // Edge移动版特殊处理
     container.style.padding = '15px 5px 70px 5px'
-    
+
     // 调整游戏板大小以适应小屏幕边缘
     gameBoard.style.width = `min(${boardSize}px, calc(100vw - 20px))`
     gameBoard.style.height = gameBoard.style.width
-    
+
     // 确保底部按钮区域始终可见
     footer.style.position = 'fixed'
     footer.style.bottom = '10px'
     footer.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'
     footer.style.padding = '8px 5px'
     footer.style.boxShadow = '0 -2px 8px rgba(0, 0, 0, 0.1)'
-    
+
     // 重新计算其他元素宽度
     const adjustedWidth = gameBoard.offsetWidth + 'px'
     header.style.maxWidth = adjustedWidth
     if (comboDisplay) comboDisplay.style.maxWidth = adjustedWidth
-    if (comboEffectContainer) comboEffectContainer.style.maxWidth = adjustedWidth
+    if (comboEffectContainer)
+      comboEffectContainer.style.maxWidth = adjustedWidth
     footer.style.maxWidth = adjustedWidth
   } else if (isFirefox && isMobile) {
     // Firefox移动版特殊处理
     gameBoard.style.margin = '10px auto'
-    
+
     // Firefox在某些移动设备上的特殊修复
     const cardFronts = document.querySelectorAll('.card-front')
     const cardBacks = document.querySelectorAll('.card-back')
-    
-    cardFronts.forEach(front => {
+
+    cardFronts.forEach((front) => {
       front.style.backfaceVisibility = 'hidden'
       front.style.zIndex = '2'
     })
-    
-    cardBacks.forEach(back => {
+
+    cardBacks.forEach((back) => {
       back.style.backfaceVisibility = 'hidden'
       back.style.zIndex = '1'
     })
   }
-  
+
   // 横屏模式特殊处理
   if (window.innerWidth > window.innerHeight && window.innerHeight < 500) {
     // 横屏且高度较小时，采用水平布局
     const landscapeBoardSize = Math.min(window.innerHeight * 0.7, 450)
     gameBoard.style.width = `${landscapeBoardSize}px`
     gameBoard.style.height = `${landscapeBoardSize}px`
-    
+
     if (container) {
       container.style.flexDirection = 'row'
       container.style.flexWrap = 'wrap'
       container.style.justifyContent = 'center'
       container.style.alignItems = 'center'
     }
-    
+
     header.style.width = '30%'
     header.style.maxWidth = '200px'
     header.style.marginBottom = '0'
-    
+
     footer.style.width = '30%'
     footer.style.maxWidth = '200px'
     footer.style.flexDirection = 'column'
-    
+
     // 调整连击显示器
     if (comboEffectContainer) {
       comboEffectContainer.style.position = 'absolute'
@@ -1150,7 +1161,7 @@ function ensureGameLayout() {
       comboEffectContainer.style.left = '0'
       comboEffectContainer.style.width = '100%'
     }
-    
+
     if (comboDisplay) {
       comboDisplay.style.position = 'absolute'
       comboDisplay.style.bottom = '0'
@@ -1164,12 +1175,12 @@ function ensureGameLayout() {
     if (container) {
       container.style.flexDirection = 'column'
     }
-    
+
     header.style.width = '100%'
-    
+
     footer.style.width = '100%'
     footer.style.flexDirection = 'row'
-    
+
     if (comboDisplay) {
       comboDisplay.style.position = 'relative'
       comboDisplay.style.transform = 'none'
