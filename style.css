@@ -1320,3 +1320,211 @@ body {
   from { opacity: 1; }
   to { opacity: 0; transform: translateX(-50%) translateY(10px); }
 }
+
+/* 成就系统样式 */
+.achieve-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.achieve-item {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.achieve-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle at 25% 25%,
+    rgba(255, 237, 213, 0.2) 10px,
+    transparent 10px
+  );
+  background-size: 60px 60px;
+  opacity: 0.5;
+}
+
+.achieve-item.unlocked {
+  background-color: rgba(255, 245, 225, 0.9);
+  box-shadow: 0 3px 12px rgba(255, 156, 82, 0.2);
+  border: 1px solid rgba(255, 156, 82, 0.3);
+}
+
+.achieve-item.locked {
+  filter: grayscale(0.7);
+  opacity: 0.8;
+}
+
+.achievement-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 15px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  background-color: #f5f0e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.achievement-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.unlocked .achievement-icon img {
+  animation: achievementUnlock 1s ease-out;
+}
+
+@keyframes achievementUnlock {
+  0% { transform: scale(0.8) rotate(-5deg); opacity: 0.5; }
+  50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.achievement-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.achievement-name {
+  font-weight: bold;
+  color: #8e7a60;
+  font-size: 1.2rem;
+}
+
+.achievement-status {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.achievement-status.unlocked {
+  color: #ff9c52;
+  text-shadow: 0 0 5px rgba(255, 156, 82, 0.3);
+  animation: trophyShine 3s infinite alternate;
+}
+
+@keyframes trophyShine {
+  0% { transform: scale(1) rotate(-5deg); text-shadow: 0 0 5px rgba(255, 156, 82, 0.3); }
+  50% { transform: scale(1.1); text-shadow: 0 0 8px rgba(255, 156, 82, 0.6), 0 0 12px rgba(255, 156, 82, 0.3); }
+  100% { transform: scale(1) rotate(5deg); text-shadow: 0 0 5px rgba(255, 156, 82, 0.3); }
+}
+
+.achievement-status.locked {
+  color: #aaa;
+}
+
+.achievement-desc {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.view-achievement {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  min-width: 60px;
+  margin-left: 10px;
+}
+
+/* 成就详情模态框 */
+.achievement-detail-modal {
+  z-index: 1100; /* 确保显示在其他模态框之上 */
+}
+
+.achievement-detail-content {
+  background-color: #fffaf0;
+  max-width: 350px;
+}
+
+.achievement-detail-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: detailImageReveal 1s ease-out;
+}
+
+@keyframes detailImageReveal {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.achievement-detail-desc {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.empty-achievement {
+  text-align: center;
+  padding: 30px 0;
+  color: #888;
+}
+
+/* 响应式调整 */
+@media (max-width: 425px) {
+  .achievement-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .achievement-name {
+    font-size: 1rem;
+  }
+  
+  .achievement-desc {
+    font-size: 0.8rem;
+  }
+  
+  .view-achievement {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    min-width: 50px;
+  }
+  
+  .achievement-detail-image {
+    height: 150px;
+  }
+}

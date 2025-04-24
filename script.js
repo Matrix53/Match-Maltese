@@ -41,12 +41,21 @@ let lockBoard = false
 let matchedPairs = 0
 let currentPotentialScore = 200 // 每对卡片的最高得分
 let comboCount = 0 // 连击计数
-let comboTimer = null // 连击计时器
 let lastMatchTime = 0 // 上次匹配时间
 let gameActive = false // 游戏是否激活中
+let timeWarningShown = false // 是否已显示时间警告
 const TIME_LIMIT = 60 // 游戏时间限制（秒）
 const TIME_WARNING = 30 // 剩余时间警告（秒）
-let timeWarningShown = false // 是否已显示时间警告
+
+// 游戏成就
+const GAME_ACH = [
+  {name:'难免失误', img: 'images/hidden/hidden9.jpeg', desc: '游戏总是有意外的😶‍🌫️，生活也是', cond:'游戏超时一次'},
+  {name:'一连串', img: 'images/hidden/hidden4.jpeg', desc: '就像烧烤串一样顺理成章🎆', cond:'达成超级连击'},
+  {name:'超大杯', img: 'images/hidden/hidden11.jpeg', desc: '像滚雪球🎿一样开心，超大的雪球', cond:'获得3000分'},
+  {name:'大大的2', img: 'images/hidden/hidden10.jpeg', desc: '这么说来...连我们的树🎋都一年啦', cond:'画出一个2'},
+  {name:'3点8',img: 'images/hidden/hidden1.jpeg', desc: '3月8日🎐要不要给小白白吹头头？', cond:'点击8次小白'},
+  {name:'你的名字', img: 'images/hidden/hidden6.jpeg', desc: '小狗想永远待在四月的天空下💘', cond:'输入你的名字'},
+]
 
 // 分数层级阈值和效果
 const SCORE_TIERS = [
@@ -63,7 +72,6 @@ const SCORE_TIERS = [
 function initGame() {
   clearInterval(gameTimer)
   clearInterval(scoreTimer)
-  if (comboTimer) clearTimeout(comboTimer)
 
   cards = []
   score = 0
@@ -188,6 +196,9 @@ function gameOver() {
 
   // 播放失败音效
   failSound.play()
+
+  // 解锁失败成就
+  unlockAchievement('难免失误')
 
   // 显示失败模态框
   failModal.style.display = 'flex'
@@ -333,6 +344,12 @@ function addScore() {
   // 增加连击计数
   comboCount++
 
+  // 连击成就检查
+  if (comboCount === 3) {
+    // 解锁"一连串"成就
+    unlockAchievement('一连串')
+  }
+
   // 连击奖励系数
   let comboMultiplier = 1
 
@@ -364,12 +381,6 @@ function addScore() {
     superComboSound.currentTime = 0
     superComboSound.play()
   }
-
-  // 重设连击超时计时器，延长至5秒(原来是4秒)
-  if (comboTimer) clearTimeout(comboTimer)
-  comboTimer = setTimeout(() => {
-    comboCount = 0
-  }, 5000) // 5秒后重置连击
 
   // 计算本次得分（基础分数 * 连击系数）
   const pointsEarned = Math.round(currentPotentialScore * comboMultiplier)
@@ -428,6 +439,12 @@ function addScore() {
 
   // 重置当前分数计算器
   currentPotentialScore = 200
+
+  // 分数成就检查
+  if (score >= 3000) {
+    // 解锁"超大杯"成就
+    unlockAchievement('超大杯')
+  }
 
   // 检查游戏是否结束
   matchedPairs++
@@ -835,7 +852,154 @@ function shareRanking() {
   copyToClipboard(shareText)
 
   // 显示成功通知
-  showNotification('链接已复制到剪贴板')
+  showNotification('分享链接已复制到剪贴板')
+}
+
+// 显示游戏成就
+function showAchievement() {
+  // 获取成就模态框
+  const achieveModal = document.getElementById('achieve-modal')
+  const achieveList = document.getElementById('achieve-list')
+  
+  // 从本地存储中获取已解锁成就
+  const unlockedAchievements = JSON.parse(localStorage.getItem('dogMatchAchievements')) || {}
+  
+  // 构建成就列表HTML
+  let achieveHTML = ''
+  
+  // 遍历所有成就
+  GAME_ACH.forEach((achievement, index) => {
+    // 检查成就是否已解锁
+    const isUnlocked = unlockedAchievements[achievement.name] === true
+    
+    // 设置成就项的类和状态图标
+    const achieveItemClass = isUnlocked ? 'achieve-item unlocked' : 'achieve-item locked'
+    const statusIcon = isUnlocked ? '🏆' : '🔒'
+    const statusClass = isUnlocked ? 'achievement-status unlocked' : 'achievement-status locked'
+    
+    // 构建每个成就项的HTML
+    achieveHTML += `
+      <div class="${achieveItemClass}" data-index="${index}">
+        <div class="achievement-icon">
+          <img src="${isUnlocked ? achievement.img : 'images/locked.svg'}" alt="${achievement.name}" />
+        </div>
+        <div class="achievement-content">
+          <div class="achievement-header">
+            <span class="achievement-name">${achievement.name}</span>
+            <span class="${statusClass}">${statusIcon}</span>
+          </div>
+          ${isUnlocked ? `<p class="achievement-desc">${achievement.cond}</p>` : '<p class="achievement-desc">未解锁</p>'}
+        </div>
+        ${isUnlocked ? '<button class="view-achievement game-btn">查看</button>' : ''}
+      </div>
+    `
+  })
+  
+  // 更新成就列表内容
+  achieveList.innerHTML = achieveHTML
+  
+  // 为已解锁成就的"查看"按钮添加事件监听
+  const viewButtons = document.querySelectorAll('.view-achievement')
+  viewButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.stopPropagation()
+      const achieveItem = this.closest('.achieve-item')
+      const index = parseInt(achieveItem.dataset.index)
+      showAchievementDetail(GAME_ACH[index])
+    })
+  })
+  
+  // 显示成就模态框
+  achieveModal.style.display = 'flex'
+}
+
+// 显示成就详情
+function showAchievementDetail(achievement) {
+  // 创建详情模态框
+  const detailModal = document.createElement('div')
+  detailModal.classList.add('modal', 'achievement-detail-modal')
+  
+  // 构建详情模态框内容
+  detailModal.innerHTML = `
+    <div class="modal-content achievement-detail-content">
+      <div class="modal-header">
+        <h2>${achievement.name}</h2>
+      </div>
+      <div class="modal-body">
+        <div class="achievement-detail-image">
+          <img src="${achievement.img}" alt="${achievement.name}" />
+        </div>
+        <div class="achievement-detail-desc">
+          <p>${achievement.desc}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="close-detail game-btn">关闭</button>
+      </div>
+    </div>
+  `
+  
+  // 将详情模态框添加到页面
+  document.body.appendChild(detailModal)
+  
+  // 设置关闭按钮事件
+  const closeButton = detailModal.querySelector('.close-detail')
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(detailModal)
+  })
+  
+  // 显示详情模态框
+  detailModal.style.display = 'flex'
+}
+
+// 解锁成就函数
+function unlockAchievement(achievementName) {
+  // 获取当前已解锁成就
+  const unlockedAchievements = JSON.parse(localStorage.getItem('dogMatchAchievements')) || {}
+  
+  // 检查成就是否已解锁
+  if (!unlockedAchievements[achievementName]) {
+    // 标记为已解锁
+    unlockedAchievements[achievementName] = true
+    
+    // 保存到本地存储
+    localStorage.setItem('dogMatchAchievements', JSON.stringify(unlockedAchievements))
+    
+    // 查找成就对象以显示通知
+    const achievement = GAME_ACH.find(ach => ach.name === achievementName)
+    if (achievement) {
+      // 显示解锁通知
+      showNotification(`🎉 解锁：${achievementName}`)
+      
+      // 可以在这里添加成就解锁的动画或音效
+    }
+  }
+}
+
+// 分享成就
+function shareAchievements() {
+  // 获取已解锁的成就
+  const unlockedAchievements = JSON.parse(localStorage.getItem('dogMatchAchievements')) || {}
+  const unlockedCount = Object.keys(unlockedAchievements).filter(key => unlockedAchievements[key]).length
+  const totalAchievements = GAME_ACH.length
+  
+  // 准备分享文本
+  const pageUrl = window.location.href
+  let shareText = ''
+  
+  if (unlockedCount === 0) {
+    shareText = `【线条小狗连连看】我发现了一个超可爱的线条小狗主题游戏，有${totalAchievements}个隐藏成就等你解锁！快来一起玩吧！${pageUrl}`
+  } else if (unlockedCount === totalAchievements) {
+    shareText = `【线条小狗连连看】太厉害了！我在线条小狗连连看游戏中解锁了所有${totalAchievements}个成就！你也来试试吧！${pageUrl}`
+  } else {
+    shareText = `【线条小狗连连看】我在线条小狗连连看游戏中已经解锁了${unlockedCount}/${totalAchievements}个成就！快来挑战吧！${pageUrl}`
+  }
+  
+  // 复制到剪贴板
+  copyToClipboard(shareText)
+  
+  // 显示成功通知
+  showNotification('分享链接已复制到剪贴板')
 }
 
 // 复制文本到剪贴板
@@ -923,6 +1087,17 @@ document.addEventListener('DOMContentLoaded', () => {
   )
   saveScoreBtn.addEventListener('click', saveScore)
   shareRankBtn.addEventListener('click', shareRanking)
+  
+  // 成就按钮事件
+  const achieveBtn = document.getElementById('achieve-btn')
+  const closeAchieveBtn = document.getElementById('close-achieve')
+  const shareAchieveBtn = document.getElementById('share-achieve')
+  
+  achieveBtn.addEventListener('click', showAchievement)
+  closeAchieveBtn.addEventListener('click', () => {
+    document.getElementById('achieve-modal').style.display = 'none'
+  })
+  shareAchieveBtn.addEventListener('click', shareAchievements)
 
   // 失败模态框按钮事件
   closeFailBtn.addEventListener('click', () => {
@@ -1005,7 +1180,6 @@ function ensureGameLayout() {
   const header = document.querySelector('.game-header')
   const footer = document.querySelector('.game-footer')
   const comboEffectContainer = document.getElementById('combo-effect-container')
-  const allButtons = document.querySelectorAll('.game-btn')
 
   if (!gameBoard || !header || !footer) return
 
@@ -1016,17 +1190,6 @@ function ensureGameLayout() {
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     )
-
-  // 添加触摸事件监听器以确保在移动设备上有响应
-  allButtons.forEach((button) => {
-    if (!button._touchListenerAdded) {
-      button.addEventListener('touchstart', function (e) {
-        e.preventDefault()
-        setTimeout(() => this.click(), 0)
-      })
-      button._touchListenerAdded = true
-    }
-  })
 
   // 设置基础容器样式
   if (container) {

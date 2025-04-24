@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect x="0" y="0" width="200" height="200" fill="#f5f0e8" />
+  
+  <!-- Lock Shape -->
+  <rect x="70" y="90" width="60" height="60" rx="5" ry="5" fill="#cccccc" stroke="#aaaaaa" stroke-width="2" />
+  
+  <!-- Lock Shackle -->
+  <path d="M 80,90 V 70 C 80,55 120,55 120,70 V 90" stroke="#aaaaaa" stroke-width="6" fill="none" stroke-linecap="round" />
+  
+  <!-- Lock Keyhole -->
+  <circle cx="100" cy="115" r="8" fill="#f5f0e8" />
+  <rect x="98" y="115" width="4" height="15" fill="#f5f0e8" />
+  
+  <!-- Question mark pattern -->
+  <g opacity="0.1">
+    <text x="40" y="40" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="160" y="40" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="40" y="170" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="160" y="170" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="100" y="60" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="60" y="100" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="140" y="100" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+    <text x="100" y="170" font-family="Arial, sans-serif" font-size="25" fill="#777">?</text>
+  </g>
+  
+  <!-- Paw print watermark -->
+  <path d="M 100,185 C 95,175 90,170 80,170 C 70,170 65,180 70,190 C 75,200 85,200 90,195 M 110,185 C 115,175 120,170 130,170 C 140,170 145,180 140,190 C 135,200 125,200 120,195 M 95,165 C 90,155 85,150 90,140 C 95,130 105,130 110,140 C 115,150 110,160 105,165 M 105,165 C 110,155 115,150 110,140 C 105,130 95,130 90,140 C 85,150 90,160 95,165" fill="none" stroke="#cccccc" stroke-width="2" opacity="0.5" />
+</svg>
