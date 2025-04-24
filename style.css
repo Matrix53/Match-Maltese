@@ -100,11 +100,75 @@ body {
   border-radius: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #fff,
     inset 0 0 0 6px #ffbb7b;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 状态背景图像样式 */
+.status-bg {
+  position: absolute;
+  height: 80%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  object-fit: contain;
+  max-height: 60px; /* 限制最大高度 */
+  opacity: 0.9; /* 稍微降低不透明度以确保文本可见性 */
+}
+
+.status-left {
+  left: 10px;
+  max-width: 30%; /* 限制最大宽度 */
+}
+
+.status-middle {
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 20%; /* 限制最大宽度 */
+}
+
+.status-right {
+  right: 10px;
+  max-width: 30%; /* 限制最大宽度 */
+}
+
+/* 小屏幕设备的背景图像调整 */
+@media (max-width: 480px) {
+  .status-bg {
+    height: 70%;
+    max-height: 50px;
+  }
+  
+  .status-left {
+    left: 5px;
+  }
+  
+  .status-right {
+    right: 5px;
+  }
+}
+
+/* 特小屏幕设备的背景图像调整 */
+@media (max-width: 375px) {
+  .status-bg {
+    height: 65%;
+    max-height: 45px;
+  }
+}
+
+/* 横屏模式下的背景图像调整 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .status-bg {
+    height: 70%;
+    max-height: 40px;
+  }
 }
 
 .status-item {
   text-align: center;
   flex: 1;
+  position: relative;
+  z-index: 2; /* 确保内容在图像之上 */
 }
 
 .status-label {
