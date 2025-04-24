@@ -542,7 +542,7 @@ body {
 
 /* 按钮样式 */
 .game-btn {
-  display: inline-block !important;
+  display: inline-block;
   padding: 10px 15px;
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
@@ -565,6 +565,19 @@ body {
   ); /* 启用硬件加速以避免某些移动浏览器中的渲染问题 */
   transform: translateZ(0);
   z-index: 100; /* 提高按钮的层级，确保它们显示在最上层 */
+}
+
+/* 圆形音乐按钮样式 */
+.circle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: unset;
+  font-size: 1.2rem;
 }
 
 .game-btn::before {
@@ -967,7 +980,7 @@ body {
   box-shadow: 0 0 40px rgba(255, 82, 82, 0.4), 
               inset 0 0 20px rgba(255, 82, 82, 0.3),
               0 0 60px 10px rgba(255, 221, 0, 0.3);
-  animation: superShockwaveEffect 1.2s ease-out forwards !important;
+  animation: superShockwaveEffect 1.2s ease-out forwards;
 }
 
 /* 修改普通冲击波动画 */
@@ -1053,7 +1066,7 @@ body {
 }
 
 /* 响应式调整 */
-@media (max-width: 375px) {
+@media (max-width: 425px) {
   .status-label {
     font-size: 0.9rem;
   }
@@ -1072,7 +1085,15 @@ body {
     padding: 8px 12px; /* 更小的按钮内边距 */
     font-size: 0.85rem; /* 更小的字体大小 */
     margin: 3px; /* 更小的按钮间距 */
-    display: inline-block !important; /* 再次强制显示 */
+    min-width: 70px; /* 更小的最小宽度 */
+  }
+  
+  .circle-btn {
+    width: 34px;
+    height: 34px;
+    min-width: unset;
+    padding: 0;
+    font-size: 1rem;
   }
 
   .modal-content {
@@ -1148,6 +1169,13 @@ body {
   .game-btn {
     padding: 6px 10px;
     font-size: 0.8rem;
+  }
+  
+  .circle-btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 0.9rem;
   }
 }
 

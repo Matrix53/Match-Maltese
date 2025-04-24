@@ -56,7 +56,7 @@ const SCORE_TIERS = [
   { threshold: 2000, className: 'score-tier-4' },
   { threshold: 2500, className: 'score-tier-5' },
   { threshold: 3000, className: 'score-tier-6' },
-  { threshold: 3500, className: 'score-tier-7' }
+  { threshold: 3500, className: 'score-tier-7' },
 ]
 
 // 初始化游戏
@@ -85,7 +85,7 @@ function initGame() {
   // 更新显示
   scoreElement.textContent = score
   timeElement.textContent = TIME_LIMIT - timeElapsed
-  
+
   // 重置分数显示效果
   updateScoreDisplay()
 
@@ -318,7 +318,6 @@ function checkForMatch() {
 
 // 添加得分
 function addScore() {
-
   // 计算当前时间与上次匹配时间的差值（秒）
   const now = Date.now()
   const timeDiff = (now - lastMatchTime) / 1000
@@ -353,7 +352,6 @@ function addScore() {
     // 播放连击音效
     comboSound.currentTime = 0
     comboSound.play()
-
   } else if (comboCount >= 3) {
     // 超级连击：3连击以上
     comboMultiplier = 2 + (comboCount - 3) * 0.5 // 递增奖励(调整基数为3)
@@ -379,7 +377,7 @@ function addScore() {
   // 添加得分
   score += pointsEarned
   scoreElement.textContent = score
-  
+
   // 更新分数显示效果
   updateScoreDisplay()
 
@@ -640,10 +638,10 @@ function addSuperShockwave(container) {
 // 更新分数显示效果
 function updateScoreDisplay() {
   // 移除所有分数效果类
-  SCORE_TIERS.forEach(tier => {
+  SCORE_TIERS.forEach((tier) => {
     scoreElement.classList.remove(tier.className)
   })
-  
+
   // 添加匹配的最高层级效果
   for (let i = SCORE_TIERS.length - 1; i >= 0; i--) {
     if (score >= SCORE_TIERS[i].threshold) {
@@ -901,11 +899,11 @@ function showNotification(message) {
 function toggleMusic() {
   if (bgMusic.paused) {
     bgMusic.play()
-    musicBtn.textContent = '🔊 音乐开'
+    musicBtn.textContent = '🔊'
     musicBtn.classList.add('active')
   } else {
     bgMusic.pause()
-    musicBtn.textContent = '🔈 音乐关'
+    musicBtn.textContent = '🔈'
     musicBtn.classList.remove('active')
   }
 }
@@ -973,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .play()
       .then(() => {
         musicStarted = true
-        musicBtn.textContent = '🔊 音乐开'
+        musicBtn.textContent = '🔊'
         musicBtn.classList.add('active')
       })
       .catch((err) => {
@@ -1019,13 +1017,8 @@ function ensureGameLayout() {
       navigator.userAgent
     )
 
-  // 确保按钮在所有平台上可见
+  // 添加触摸事件监听器以确保在移动设备上有响应
   allButtons.forEach((button) => {
-    button.style.display = 'inline-block'
-    button.style.visibility = 'visible'
-    button.style.opacity = '1'
-
-    // 添加触摸事件监听器以确保在移动设备上有响应
     if (!button._touchListenerAdded) {
       button.addEventListener('touchstart', function (e) {
         e.preventDefault()
@@ -1135,7 +1128,6 @@ function ensureGameLayout() {
       comboEffectContainer.style.left = '0'
       comboEffectContainer.style.width = '100%'
     }
-
   } else {
     // 竖屏或宽屏模式，恢复垂直布局
     if (container) {
@@ -1146,6 +1138,5 @@ function ensureGameLayout() {
 
     footer.style.width = '100%'
     footer.style.flexDirection = 'row'
-
   }
 }
