@@ -48,6 +48,17 @@ const TIME_LIMIT = 60 // 游戏时间限制（秒）
 const TIME_WARNING = 30 // 剩余时间警告（秒）
 let timeWarningShown = false // 是否已显示时间警告
 
+// 分数层级阈值和效果
+const SCORE_TIERS = [
+  { threshold: 500, className: 'score-tier-1' },
+  { threshold: 1000, className: 'score-tier-2' },
+  { threshold: 1500, className: 'score-tier-3' },
+  { threshold: 2000, className: 'score-tier-4' },
+  { threshold: 2500, className: 'score-tier-5' },
+  { threshold: 3000, className: 'score-tier-6' },
+  { threshold: 3500, className: 'score-tier-7' }
+]
+
 // 初始化游戏
 function initGame() {
   clearInterval(gameTimer)
@@ -74,6 +85,9 @@ function initGame() {
   // 更新显示
   scoreElement.textContent = score
   timeElement.textContent = TIME_LIMIT - timeElapsed
+  
+  // 重置分数显示效果
+  updateScoreDisplay()
 
   // 清空游戏板
   gameBoard.innerHTML = ''
@@ -365,6 +379,9 @@ function addScore() {
   // 添加得分
   score += pointsEarned
   scoreElement.textContent = score
+  
+  // 更新分数显示效果
+  updateScoreDisplay()
 
   // 显示加分动画
   const scorePopup = document.createElement('div')
@@ -618,6 +635,22 @@ function addSuperShockwave(container) {
       container.removeChild(shockwave)
     }
   })
+}
+
+// 更新分数显示效果
+function updateScoreDisplay() {
+  // 移除所有分数效果类
+  SCORE_TIERS.forEach(tier => {
+    scoreElement.classList.remove(tier.className)
+  })
+  
+  // 添加匹配的最高层级效果
+  for (let i = SCORE_TIERS.length - 1; i >= 0; i--) {
+    if (score >= SCORE_TIERS[i].threshold) {
+      scoreElement.classList.add(SCORE_TIERS[i].className)
+      break
+    }
+  }
 }
 
 // 禁用已匹配的卡片

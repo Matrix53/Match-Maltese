@@ -215,6 +215,163 @@ body {
   transform: perspective(500px) rotateX(10deg);
 }
 
+/* 得分特效样式 */
+/* 基础得分样式已经在status-value类中定义 */
+
+/* 500+分数特效 */
+.score-tier-1 {
+  color: #ffaa52;
+  text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 0 2px 5px rgba(255, 170, 82, 0.4);
+  animation: scorePulse 2s infinite alternate;
+}
+
+/* 1000+分数特效 */
+.score-tier-2 {
+  color: #ff9442;
+  text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 0 2px 5px rgba(255, 148, 66, 0.5);
+  animation: scoreGlow 2.5s infinite alternate;
+}
+
+/* 1500+分数特效 */
+.score-tier-3 {
+  color: #ff7e30;
+  text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 0 2px 8px rgba(255, 126, 48, 0.6);
+  animation: scoreWiggle 2.5s infinite ease-in-out;
+}
+
+/* 2000+分数特效 */
+.score-tier-4 {
+  color: #ff6a1a;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff,
+    -1px 1px 0 #fff, 0 3px 8px rgba(255, 106, 26, 0.7);
+  animation: scoreScale 3s infinite alternate;
+}
+
+/* 2500+分数特效 */
+.score-tier-5 {
+  background: linear-gradient(45deg, #ff9c52, #ff7730, #ff5500);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(2px 2px 0px white) 
+          drop-shadow(-1px -1px 0px white) 
+          drop-shadow(0px 3px 3px rgba(255, 85, 0, 0.3));
+  animation: scoreGradient 4s infinite linear;
+}
+
+/* 3000+分数特效 */
+.score-tier-6 {
+  background: linear-gradient(45deg, #ffbb7b, #ff9c52, #ff7730, #ff5500);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(2px 2px 0px white) 
+          drop-shadow(-1px -1px 0px white) 
+          drop-shadow(0px 3px 5px rgba(255, 85, 0, 0.4));
+  animation: scoreGradientFast 3s infinite linear, scoreFloating 2s infinite alternate ease-in-out;
+}
+
+/* 3500+分数特效 - 顶级特效 */
+.score-tier-7 {
+  background: linear-gradient(45deg, #ffcc88, #ffaa55, #ff8822, #ff6600, #ff4400);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(2px 2px 0px white) 
+          drop-shadow(-1px -1px 0px white) 
+          drop-shadow(0px 0px 5px rgba(255, 170, 0, 0.6));
+  animation: scoreGradientFast 3s infinite linear, scoreJump 1.5s infinite, scoreShimmer 2s infinite;
+  position: relative;
+}
+
+/* 添加小狗爪印装饰（仅在高级分数时显示） */
+.score-tier-7::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -20px;
+  width: 20px;
+  height: 20px;
+  background-image: url(images/paw.svg);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  transform-origin: center;
+  animation: pawWiggle 1.5s infinite alternate;
+  filter: brightness(0) invert(60%) sepia(50%) saturate(2000%) hue-rotate(360deg);
+}
+
+/* 得分特效动画 */
+@keyframes scorePulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes scoreGlow {
+  0% { text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 2px 5px rgba(255, 148, 66, 0.2); }
+  100% { text-shadow: 2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 0 2px 15px rgba(255, 148, 66, 0.8); }
+}
+
+@keyframes scoreWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-2deg); }
+  75% { transform: rotate(2deg); }
+}
+
+@keyframes scoreScale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05) rotate(1deg); }
+  100% { transform: scale(1.1) rotate(-1deg); }
+}
+
+@keyframes scoreGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes scoreGradientFast {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes scoreFloating {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-3px); }
+}
+
+@keyframes scoreJump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes scoreShimmer {
+  0% { filter: drop-shadow(2px 2px 0px white) drop-shadow(-1px -1px 0px white) drop-shadow(0px 0px 5px rgba(255, 170, 0, 0.3)); }
+  50% { filter: drop-shadow(2px 2px 0px white) drop-shadow(-1px -1px 0px white) drop-shadow(0px 0px 8px rgba(255, 170, 0, 0.8)); }
+  100% { filter: drop-shadow(2px 2px 0px white) drop-shadow(-1px -1px 0px white) drop-shadow(0px 0px 5px rgba(255, 170, 0, 0.3)); }
+}
+
+@keyframes pawWiggle {
+  0% { transform: rotate(-10deg) scale(0.9); }
+  100% { transform: rotate(10deg) scale(1.1); }
+}
+
 /* 游戏主体 - 使用固定位置而不是绝对位置 */
 .game-board {
   width: min(85vw, min(85vh - 200px, 500px));
@@ -1065,39 +1222,39 @@ body {
   color: #777;
 }
 
-/* 时间紧迫警告效果 - 改为更温和友好的颜色 */
+/* 时间紧迫警告效果 - 更温和友好的颜色 */
 .time-warning {
   animation: timeWarningPulse 1.5s infinite alternate;
-  color: #ff9c52 !important; /* 使用游戏主题的橙色代替鲜红色 */
-  text-shadow: 0 0 5px rgba(255, 156, 82, 0.5) !important;
+  color: #ff9c52; /* 使用游戏主题的橙色 */
+  text-shadow: 0 0 1px rgba(255, 156, 82, 0.5);
 }
 
 @keyframes timeWarningPulse {
   0% {
     transform: scale(1);
-    text-shadow: 0 0 5px rgba(255, 156, 82, 0.5);
+    text-shadow: 0 0 1px rgba(255, 156, 82, 0.5);
   }
   100% {
-    transform: scale(1.15);
-    text-shadow: 0 0 10px rgba(255, 156, 82, 0.8), 0 0 15px rgba(255, 119, 48, 0.5);
+    transform: scale(1.03);
+    text-shadow: 0 0 2px rgba(255, 156, 82, 0.8), 0 0 3px rgba(255, 119, 48, 0.5);
   }
 }
 
-/* 时间危急警告效果 - 改为更符合游戏主题的颜色 */
+/* 时间危急警告效果 - 更符合游戏主题的颜色 */
 .time-critical {
   animation: timeCriticalPulse 0.8s infinite alternate;
-  color: #ff7730 !important; /* 使用更深的橙色而不是鲜红色 */
-  text-shadow: 0 0 8px rgba(255, 119, 48, 0.7) !important;
+  color: #ff7730; /* 使用更深的橙色 */
+  text-shadow: 0 0 1px rgba(255, 119, 48, 0.7);
 }
 
 @keyframes timeCriticalPulse {
   0% {
     transform: scale(1);
-    text-shadow: 0 0 8px rgba(255, 119, 48, 0.7);
+    text-shadow: 0 0 1px rgba(255, 119, 48, 0.7);
   }
   100% {
-    transform: scale(1.25);
-    text-shadow: 0 0 15px rgba(255, 119, 48, 0.9), 0 0 20px rgba(255, 156, 82, 0.6);
+    transform: scale(1.05);
+    text-shadow: 0 0 2px rgba(255, 119, 48, 0.9), 0 0 3px rgba(255, 156, 82, 0.6);
   }
 }
 
