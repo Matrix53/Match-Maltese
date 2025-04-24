@@ -182,30 +182,6 @@ body {
   justify-content: center;
 }
 
-/* 添加状态图标样式 */
-.status-icon {
-  width: 1.2rem;
-  height: 1.2rem;
-  margin-left: 0.3rem;
-  vertical-align: middle;
-  display: inline-block;
-  fill: #b3a38f; /* 将默认填充颜色设置得更浅一些 */
-  transform: translateY(-1px); /* 微调垂直位置使其更加协调 */
-  filter: drop-shadow(1px 1px 0 #fff); /* 添加轻微阴影效果增强可见性 */
-}
-
-.score-icon {
-  fill: #b3a38f; /* 更浅的颜色 */
-  width: 1rem; /* 调整得分图标尺寸，使其略小 */
-  height: 1rem;
-}
-
-.time-icon {
-  fill: #b3a38f; /* 更浅的颜色 */
-  width: 1rem; /* 调整时间图标尺寸，使其略小 */
-  height: 1rem;
-}
-
 .status-value {
   font-size: 2rem;
   font-weight: bold;
@@ -1069,12 +1045,6 @@ body {
 @media (max-width: 425px) {
   .status-label {
     font-size: 0.9rem;
-  }
-
-  .status-icon {
-    width: 1rem;
-    height: 1rem;
-    margin-left: 0.2rem;
   }
 
   .status-value {
