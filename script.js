@@ -45,11 +45,13 @@ let comboCount = 0 // 连击计数
 let lastMatchTime = 0 // 上次匹配时间
 let gameActive = false // 游戏是否激活中
 let initCount = 0 // 游戏初始化的次数
+let clickStatusCount = 0 // 点击状态栏最右侧图像的次数
 let timeWarningShown = false // 是否已显示时间警告
+let cardTrajectory = [] // 卡片轨迹数组
 const TIME_LIMIT = 60 // 游戏时间限制（秒）
 const TIME_WARNING = 30 // 剩余时间警告（秒）
 
-// 游戏成就
+// 游戏成就相关
 const GAME_ACH = [
   {name:'难免失误', img: 'images/hidden/hidden9.jpeg', desc: '游戏总是有意外的😶‍🌫️，生活也是', cond:'游戏超时一次'},
   {name:'一连串', img: 'images/hidden/hidden4.jpeg', desc: '就像烧烤串一样顺理成章🎆', cond:'达成超级连击'},
@@ -58,6 +60,7 @@ const GAME_ACH = [
   {name:'3点8',img: 'images/hidden/hidden1.jpeg', desc: '3月8日🎐要不要给小白白吹头头？', cond:'点击8次小白'},
   {name:'你的名字', img: 'images/hidden/hidden6.jpeg', desc: '小狗想永远待在四月的天空下💘', cond:'输入你的名字'},
 ]
+const MAGIC_TRACE = JSON.stringify(['0', '1', '2', '3', '6', '9', '12', '13', '14', '15']) // 轨迹成就的魔法轨迹
 
 // 分数层级阈值和效果
 const SCORE_TIERS = [
@@ -76,6 +79,7 @@ function initGame() {
   clearInterval(scoreTimer)
 
   cards = []
+  cardTrajectory = [] // 重置卡片轨迹
   score = 0
   timeElapsed = 0
   matchedPairs = 0
@@ -87,6 +91,7 @@ function initGame() {
   lastMatchTime = 0 // 重置上次匹配时间
   timeWarningShown = false // 重置时间警告状态
   gameActive = false // 重置游戏状态
+  clickStatusCount = 0 // 重置状态栏点击计数
 
   // 移除时间警告样式
   timeElement.classList.remove('time-warning')
@@ -243,6 +248,7 @@ function createCards() {
     const card = document.createElement('div')
     card.classList.add('card')
     card.dataset.card = cardId
+    card.dataset.index = index // 添加卡片索引数据属性，用于记录翻牌轨迹
 
     const cardInner = document.createElement('div')
     cardInner.classList.add('card-inner')
@@ -325,6 +331,18 @@ function flipCard() {
 
   // 第二次点击
   secondCard = this
+
+  // 记录翻牌轨迹
+  cardTrajectory.push(firstCard.dataset.index)
+  cardTrajectory.push(secondCard.dataset.index)
+
+  // 轨迹成就检查
+  if (JSON.stringify(cardTrajectory.slice(-10)) === MAGIC_TRACE) {
+    // 解锁"大大的2"成就
+    unlockAchievement('大大的2')
+  }
+
+  // 检查匹配
   checkForMatch()
 }
 
@@ -1030,6 +1048,16 @@ function shareAchievements() {
   showNotification('分享链接已复制到剪贴板')
 }
 
+// 3点8成就的相关函数
+// 如果在一局游戏间隔内点击了8次右上角图像，则解锁成就
+function clickStatus() {
+  clickStatusCount++
+  if (clickStatusCount >= 8) {
+    // 解锁"3点8"成就
+    unlockAchievement('3点8')
+  }
+}
+
 // 复制文本到剪贴板
 function copyToClipboard(text) {
   // 创建临时元素
@@ -1120,12 +1148,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const achieveBtn = document.getElementById('achieve-btn')
   const closeAchieveBtn = document.getElementById('close-achieve')
   const shareAchieveBtn = document.getElementById('share-achieve')
+  const statusRightImg = document.querySelector('.status-right')
   
   achieveBtn.addEventListener('click', showAchievement)
   closeAchieveBtn.addEventListener('click', () => {
     document.getElementById('achieve-modal').style.display = 'none'
   })
   shareAchieveBtn.addEventListener('click', shareAchievements)
+  statusRightImg.addEventListener('click', clickStatus)
 
   // 失败模态框按钮事件
   closeFailBtn.addEventListener('click', () => {
