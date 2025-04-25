@@ -2,6 +2,7 @@
 * {
   margin: 0;
   padding: 0;
+  user-select: none;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
@@ -502,7 +503,6 @@ body {
 .game-btn {
   display: inline-block;
   padding: 10px 15px;
-  user-select: none;
   font-family: 'Baloo 2', cursive;
   font-size: 1rem;
   font-weight: bold;
@@ -1301,7 +1301,7 @@ body {
 
 @keyframes fadeOut {
   from { opacity: 1; }
-  to { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 0; transform: translate(-50%, -60%); }
 }
 
 /* 成就系统样式 */

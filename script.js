@@ -43,6 +43,7 @@ let currentPotentialScore = 200 // 每对卡片的最高得分
 let comboCount = 0 // 连击计数
 let lastMatchTime = 0 // 上次匹配时间
 let gameActive = false // 游戏是否激活中
+let initCount = 0 // 游戏初始化的次数
 let timeWarningShown = false // 是否已显示时间警告
 const TIME_LIMIT = 60 // 游戏时间限制（秒）
 const TIME_WARNING = 30 // 剩余时间警告（秒）
@@ -83,8 +84,8 @@ function initGame() {
   currentPotentialScore = 200
   comboCount = 0 // 重置连击计数
   lastMatchTime = 0 // 重置上次匹配时间
-  gameActive = true // 激活游戏
   timeWarningShown = false // 重置时间警告状态
+  gameActive = false // 重置游戏状态
 
   // 移除时间警告样式
   timeElement.classList.remove('time-warning')
@@ -103,44 +104,61 @@ function initGame() {
   // 创建卡片
   createCards()
 
-  // 启动计时器
-  gameTimer = setInterval(() => {
-    timeElapsed++
-    timeElement.textContent = TIME_LIMIT - timeElapsed
+  // 如果是第一次游戏，当用户第一次翻牌时开始计时
+  // 如果不是第一次游戏，直接开始计时
+  initCount++
+  if (initCount > 1) resumeGame()
+}
 
-    // 检查剩余时间并添加视觉警告
-    const timeLeft = TIME_LIMIT - timeElapsed
+// 暂停游戏
+function pauseGame() {
+  clearInterval(gameTimer)
+  clearInterval(scoreTimer)
+  gameActive = false // 暂停游戏
+}
 
-    // 游戏失败检查
-    if (timeLeft <= 0 && gameActive) {
-      gameOver()
-      return
-    }
+// 继续游戏
+function resumeGame() {
+  if (!gameActive) {
+    gameActive = true // 继续游戏
+    gameTimer = setInterval(() => {
+      timeElapsed++
+      timeElement.textContent = TIME_LIMIT - timeElapsed
 
-    // 显示30秒警告
-    if (timeLeft === TIME_WARNING && !timeWarningShown) {
-      showTimeWarning()
-      timeWarningShown = true
-    }
+      // 检查剩余时间并添加视觉警告
+      const timeLeft = TIME_LIMIT - timeElapsed
 
-    // 剩余时间少于30秒，添加警告效果
-    if (timeLeft <= TIME_WARNING && timeLeft > 10) {
-      timeElement.classList.add('time-warning')
-      timeElement.classList.remove('time-critical')
-    }
-    // 剩余时间少于10秒，添加危急效果
-    else if (timeLeft <= 10) {
-      timeElement.classList.remove('time-warning')
-      timeElement.classList.add('time-critical')
-    }
-  }, 1000)
+      // 游戏失败检查
+      if (timeLeft <= 0) {
+        gameOver()
+        return
+      }
 
-  // 启动分数递减计时器
-  scoreTimer = setInterval(() => {
-    if (currentPotentialScore > 1) {
-      currentPotentialScore--
-    }
-  }, 1000)
+      // 显示30秒警告
+      if (timeLeft === TIME_WARNING && !timeWarningShown) {
+        showTimeWarning()
+        timeWarningShown = true
+      }
+
+      // 剩余时间少于30秒，添加警告效果
+      if (timeLeft <= TIME_WARNING && timeLeft > 10) {
+        timeElement.classList.add('time-warning')
+        timeElement.classList.remove('time-critical')
+      }
+      // 剩余时间少于10秒，添加危急效果
+      else if (timeLeft <= 10) {
+        timeElement.classList.remove('time-warning')
+        timeElement.classList.add('time-critical')
+      }
+    }, 1000)
+
+    // 启动分数递减计时器
+    scoreTimer = setInterval(() => {
+      if (currentPotentialScore > 1) {
+        currentPotentialScore--
+      }
+    }, 1000)
+  }
 }
 
 // 显示时间警告
@@ -178,15 +196,6 @@ function showTimeWarning() {
     }
   }, 4000)
 }
-
-// 为时间警告添加淡出动画
-const fadeOutStyle = document.createElement('style')
-fadeOutStyle.textContent = `
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; transform: translate(-50%, -60%); }
-}`
-document.head.appendChild(fadeOutStyle)
 
 // 游戏失败处理
 function gameOver() {
@@ -298,6 +307,7 @@ function shuffle(array) {
 
 // 翻牌
 function flipCard() {
+  if (initCount === 1) resumeGame() // 如果是第一次游戏，开始计时
   if (gameActive === false) return // 游戏未激活时不允许翻牌
   if (lockBoard) return
   if (this === firstCard) return
@@ -561,7 +571,7 @@ function showSuperComboEffect(card1, card2, text) {
   })
 }
 
-// 显示简单匹配特效 (新增函数，用于单次匹配)
+// 显示简单匹配特效 (用于单次匹配)
 function showSimpleMatchEffect(card1, card2, text) {
   // 获取连击特效容器
   const comboEffectContainer = document.getElementById('combo-effect-container')
@@ -629,7 +639,7 @@ function addShockwave(container, isSuper) {
   })
 }
 
-// 添加超级冲击波特效 (新增函数，更强的震撼效果)
+// 添加超级冲击波特效 (更强的震撼效果)
 function addSuperShockwave(container) {
   // 创建冲击波元素
   const shockwave = document.createElement('div')
@@ -1185,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGame()
 })
 
-// 整合后的布局函数：确保游戏布局在所有设备和浏览器中正确显示
+// 确保游戏布局在所有设备和浏览器中正确显示
 function ensureGameLayout() {
   // 获取关键DOM元素
   const container = document.querySelector('.game-container')
