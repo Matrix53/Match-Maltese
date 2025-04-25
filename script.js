@@ -705,6 +705,12 @@ function endGame() {
   finalScoreElement.textContent = score
   finalTimeElement.textContent = timeElapsed
 
+  // 如果之前填过名字，自动填入
+  const savedName = localStorage.getItem('dogMatchPlayerName')
+  if (savedName) {
+    playerNameInput.value = savedName
+  }
+
   // 显示胜利模态框
   winModal.style.display = 'flex'
 }
@@ -712,6 +718,12 @@ function endGame() {
 // 保存分数
 function saveScore() {
   const playerName = playerNameInput.value.trim() || '匿名'
+
+  // 玩家名称成就检查
+  if (/aprilsky/i.test(playerName)) {
+    // 解锁"你的名字"成就
+    unlockAchievement('你的名字')
+  }
 
   // 获取现有排行榜
   let leaderboard =
@@ -740,6 +752,7 @@ function saveScore() {
 
   // 保存到本地存储
   localStorage.setItem('dogMatchLeaderboard', JSON.stringify(leaderboard))
+  localStorage.setItem('dogMatchPlayerName', playerNameInput.value.trim())
 
   // 关闭胜利模态框并显示排行榜
   winModal.style.display = 'none'
@@ -1183,8 +1196,7 @@ function ensureGameLayout() {
 
   if (!gameBoard || !header || !footer) return
 
-  // 检测浏览器类型
-  const isFirefox = navigator.userAgent.indexOf('Firefox') !== -1
+  // 检测是否为移动设备
   const isMobile =
     window.innerWidth <= 768 ||
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -1241,26 +1253,6 @@ function ensureGameLayout() {
   footer.style.flexWrap = 'wrap'
   footer.style.marginTop = '15px'
   footer.style.zIndex = '10'
-
-  // 特定浏览器兼容性调整
-  if (isFirefox && isMobile) {
-    // Firefox移动版特殊处理
-    gameBoard.style.margin = '10px auto'
-
-    // Firefox在某些移动设备上的特殊修复
-    const cardFronts = document.querySelectorAll('.card-front')
-    const cardBacks = document.querySelectorAll('.card-back')
-
-    cardFronts.forEach((front) => {
-      front.style.backfaceVisibility = 'hidden'
-      front.style.zIndex = '2'
-    })
-
-    cardBacks.forEach((back) => {
-      back.style.backfaceVisibility = 'hidden'
-      back.style.zIndex = '1'
-    })
-  }
 
   // 横屏模式特殊处理
   if (window.innerWidth > window.innerHeight && window.innerHeight < 500) {
