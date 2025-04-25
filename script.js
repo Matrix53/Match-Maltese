@@ -28,6 +28,7 @@ const winSound = document.getElementById('win-sound')
 const comboSound = document.getElementById('combo-sound')
 const superComboSound = document.getElementById('super-combo-sound')
 const failSound = document.getElementById('fail-sound')
+const achieveSound = document.getElementById('achieve-sound')
 
 // 游戏状态
 let cards = []
@@ -129,7 +130,7 @@ function resumeGame() {
       const timeLeft = TIME_LIMIT - timeElapsed
 
       // 游戏失败检查
-      if (timeLeft <= 0) {
+      if (timeLeft <= 0 && gameActive) {
         gameOver()
         return
       }
@@ -307,8 +308,10 @@ function shuffle(array) {
 
 // 翻牌
 function flipCard() {
-  if (initCount === 1) resumeGame() // 如果是第一次游戏，开始计时
-  if (gameActive === false) return // 游戏未激活时不允许翻牌
+  // 如果是第一次游戏的第一次翻牌，开始游戏并计时
+  if (initCount === 1 && timeElapsed === 0) resumeGame()
+  // 游戏未激活时不允许翻牌
+  if (gameActive === false) return
   if (lockBoard) return
   if (this === firstCard) return
 
@@ -994,7 +997,9 @@ function unlockAchievement(achievementName) {
       // 显示解锁通知
       showNotification(`🎉 解锁：${achievementName}`)
       
-      // 可以在这里添加成就解锁的动画或音效
+      // 成就解锁的音效
+      achieveSound.currentTime = 0
+      achieveSound.play()
     }
   }
 }
