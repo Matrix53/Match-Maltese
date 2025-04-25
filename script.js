@@ -225,7 +225,7 @@ function gameOver() {
 // 创建卡片
 function createCards() {
   // 随机选择8种图片
-  const availableCards = Array.from({ length: 372 }, (_, i) => i)
+  const availableCards = Array.from({ length: 404 }, (_, i) => i)
   const selectedCards = []
 
   while (selectedCards.length < 8) {
